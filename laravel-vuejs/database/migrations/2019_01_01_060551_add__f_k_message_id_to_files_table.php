@@ -14,10 +14,11 @@ class AddFKMessageIdToFilesTable extends Migration
     public function up()
     {
         Schema::table('files', function (Blueprint $table) {
-            $table->unsignedInteger('message_id');
+            $table->unsignedInteger('message_id')->nullable();
             $table->foreign('message_id')
                 ->references('id')->on('messages')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->nullable();
         });
     }
 
