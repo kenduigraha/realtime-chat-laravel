@@ -23,6 +23,7 @@
         "vue": "^2.5.17"
     },
     "dependencies": {
+        "laravel-echo": "^1.5.2",
         "socket.io-client": "^2.2.0"
     }
 }
