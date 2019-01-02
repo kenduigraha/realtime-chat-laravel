@@ -19,6 +19,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;        
 use Illuminate\Foundation\Inspiring; 
 use App\Events\NewUserJoinChat;
+use App\Events\NewUserLeaveChat;
+
 
 /**
  * Class FrontController
@@ -76,6 +78,14 @@ class FrontController extends Controller
         $currentUser = auth()->user();
 
         NewUserJoinChat::dispatch($currentUser);
+        return response()->json($currentUser); // return in json format
+    }
+
+    public function doNewUserLeaveChat(): object
+    {
+        $currentUser = auth()->user();
+
+        NewUserLeaveChat::dispatch($currentUser->username);
         return response()->json($currentUser); // return in json format
     }
 }

@@ -6993,6 +6993,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['homeMessage'],
@@ -7009,7 +7013,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             messageList: [{ type: 'text', author: 'BOT', data: { text: 'Welcome to chatbox. I\'m your personal assistant.' } }], // the list of the messages to show, can be paginated and adjusted dynamically
             newMessagesCount: 0,
             isChatOpen: false, // to determine whether the chat window should be open or closed
-            showTypingIndicator: 'me', // when set to a value matching the participant.id it shows the typing indicator for the specific user
+            showTypingIndicator: '', // when set to a value matching the participant.id it shows the typing indicator for the specific user
             colors: {
                 header: {
                     bg: '#4e8cff',
@@ -7070,6 +7074,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 id: String(user.id),
                 name: user.username,
                 imageUrl: 'https://avatars3.githubusercontent.com/u/37018832?s=200&v=4'
+            });
+
+            _this.$notify({
+                group: 'foo',
+                title: user.username + ' is join to chatroom',
+                text: 'Hello! ' + user.username + ' is join to chatroom',
+                type: 'success',
+                duration: 6000
+            });
+        });
+        window.Echo.channel('public-new-user-leave').listen('NewUserLeaveChat', function (payload) {
+            console.log(payload);
+            var user = payload.user;
+            // user = JSON.parse(user);
+
+            console.log(user);
+
+            _this.$notify({
+                group: 'foo',
+                title: user + ' is exiting chatroom',
+                text: 'Hello! ' + user + ' is exitng chatroom',
+                type: 'info',
+                duration: 6000
             });
         });
     },
@@ -7159,16 +7186,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             // TODO, variable participant handling when close chatbox
             // called when the user clicks on the botton to close the chat
             this.isChatOpen = false;
-        },
-
-        signalChange: function signalChange(evt) {
-            //    this.$emit("change", evt);
-            console.log('asdfasfasf');
-        }
-    },
-    watch: {
-        search: function search(value) {
-            console.log(value);
+            axios.get('/ajax/new-user-leave-chat').catch(function (error) {
+                return error.response;
+            }).then(function (response) {
+                console.log('response :');
+                console.log(response);
+                if (response.status == 200) {
+                    var user = response.data;
+                    // this.currentUser = user;
+                }
+            });
         }
     }
 });
@@ -13894,7 +13921,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-user-input--send-icon-wrapper[data-v-036a35a9] {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n}\n.sc-user-input--send-icon-wrapper[data-v-036a35a9]:focus {\n  outline: none;\n}\n.sc-user-input--send-icon[data-v-036a35a9] {\n  height: 20px;\n  width: 20px;\n  cursor: pointer;\n  -ms-flex-item-align: center;\n      align-self: center;\n  outline: none;\n}\n.sc-user-input--send-icon:hover path[data-v-036a35a9] {\n  -webkit-filter: contrast(15%);\n          filter: contrast(15%);\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/SendIcon.vue"],"names":[],"mappings":";AAyCA;EACA,iBAAA;EACA,aAAA;EACA,aAAA;EACA,YAAA;EACA,cAAA;CACA;AAEA;EACA,cAAA;CACA;AAEA;EACA,aAAA;EACA,YAAA;EACA,gBAAA;EACA,4BAAA;MAAA,mBAAA;EACA,cAAA;CACA;AAEA;EACA,8BAAA;UAAA,sBAAA;CACA","file":"SendIcon.vue","sourcesContent":["<template>\n  <button\n      @click.prevent=\"onClick\"\n      class=\"sc-user-input--send-icon-wrapper\"\n    >\n      <svg\n        version='1.1'\n        class=\"sc-user-input--send-icon\"\n        xmlns='http://www.w3.org/2000/svg'\n        x='0px'\n        y='0px'\n        width='37.393px'\n        height='37.393px'\n        viewBox='0 0 37.393 37.393'\n        enableBackground='new 0 0 37.393 37.393'>\n        <g id='Layer_2'>\n          <path :style=\"{fill: color}\" d='M36.511,17.594L2.371,2.932c-0.374-0.161-0.81-0.079-1.1,0.21C0.982,3.43,0.896,3.865,1.055,4.241l5.613,13.263\n          L2.082,32.295c-0.115,0.372-0.004,0.777,0.285,1.038c0.188,0.169,0.427,0.258,0.67,0.258c0.132,0,0.266-0.026,0.392-0.08\n          l33.079-14.078c0.368-0.157,0.607-0.519,0.608-0.919S36.879,17.752,36.511,17.594z M4.632,30.825L8.469,18.45h8.061\n          c0.552,0,1-0.448,1-1s-0.448-1-1-1H8.395L3.866,5.751l29.706,12.757L4.632,30.825z' />\n        </g>\n      </svg>\n    </button>\n</template>\n\n<script>\nexport default {\n  props: {\n    onClick: {\n      type: Function,\n      required: true\n    },\n    color: {\n      type: String,\n      required: true\n    }\n  }\n}\n</script>\n\n<style scoped>\n.sc-user-input--send-icon-wrapper {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n}\n\n.sc-user-input--send-icon-wrapper:focus {\n  outline: none;\n}\n\n.sc-user-input--send-icon {\n  height: 20px;\n  width: 20px;\n  cursor: pointer;\n  align-self: center;\n  outline: none;\n}\n\n.sc-user-input--send-icon:hover path {\n  filter: contrast(15%);\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-user-input--send-icon-wrapper[data-v-036a35a9] {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n}\n.sc-user-input--send-icon-wrapper[data-v-036a35a9]:focus {\n  outline: none;\n}\n.sc-user-input--send-icon[data-v-036a35a9] {\n  height: 20px;\n  width: 20px;\n  cursor: pointer;\n  -ms-flex-item-align: center;\n      align-self: center;\n  outline: none;\n}\n.sc-user-input--send-icon:hover path[data-v-036a35a9] {\n  -webkit-filter: contrast(15%);\n          filter: contrast(15%);\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/SendIcon.vue"],"names":[],"mappings":";AAyCA;EACA,iBAAA;EACA,aAAA;EACA,aAAA;EACA,YAAA;EACA,cAAA;CACA;AAEA;EACA,cAAA;CACA;AAEA;EACA,aAAA;EACA,YAAA;EACA,gBAAA;EACA,4BAAA;MAAA,mBAAA;EACA,cAAA;CACA;AAEA;EACA,8BAAA;UAAA,sBAAA;CACA","file":"SendIcon.vue","sourcesContent":["<template>\n  <button\n      @click.prevent=\"onClick\"\n      class=\"sc-user-input--send-icon-wrapper\"\n    >\n      <svg\n        version='1.1'\n        class=\"sc-user-input--send-icon\"\n        xmlns='http://www.w3.org/2000/svg'\n        x='0px'\n        y='0px'\n        width='37.393px'\n        height='37.393px'\n        viewBox='0 0 37.393 37.393'\n        enableBackground='new 0 0 37.393 37.393'>\n        <g id='Layer_2'>\n          <path :style=\"{fill: color}\" d='M36.511,17.594L2.371,2.932c-0.374-0.161-0.81-0.079-1.1,0.21C0.982,3.43,0.896,3.865,1.055,4.241l5.613,13.263\n          L2.082,32.295c-0.115,0.372-0.004,0.777,0.285,1.038c0.188,0.169,0.427,0.258,0.67,0.258c0.132,0,0.266-0.026,0.392-0.08\n          l33.079-14.078c0.368-0.157,0.607-0.519,0.608-0.919S36.879,17.752,36.511,17.594z M4.632,30.825L8.469,18.45h8.061\n          c0.552,0,1-0.448,1-1s-0.448-1-1-1H8.395L3.866,5.751l29.706,12.757L4.632,30.825z' />\n        </g>\n      </svg>\n    </button>\n</template>\n\n<script>\nexport default {\n  props: {\n    onClick: {\n      type: Function,\n      required: true\n    },\n    color: {\n      type: String,\n      required: true\n    }\n  }\n}\n</script>\n\n<style scoped>\n.sc-user-input--send-icon-wrapper {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n}\n\n.sc-user-input--send-icon-wrapper:focus {\n  outline: none;\n}\n\n.sc-user-input--send-icon {\n  height: 20px;\n  width: 20px;\n  cursor: pointer;\n  align-self: center;\n  outline: none;\n}\n\n.sc-user-input--send-icon:hover path {\n  filter: contrast(15%);\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -13909,7 +13936,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-typing-indicator[data-v-0dd01fb8] {\n  text-align: center;\n  padding: 17px 20px;\n  border-radius: 6px;\n}\n.sc-typing-indicator span[data-v-0dd01fb8] {\n  display: inline-block;\n  background-color: #B6B5BA;\n  width: 10px;\n  height: 10px;\n  border-radius: 100%;\n  margin-right: 3px;\n  -webkit-animation: bob-data-v-0dd01fb8 2s infinite;\n          animation: bob-data-v-0dd01fb8 2s infinite;\n}\n\n/* SAFARI GLITCH */\n.sc-typing-indicator span[data-v-0dd01fb8]:nth-child(1) {\n  -webkit-animation-delay: -1s;\n          animation-delay: -1s;\n}\n.sc-typing-indicator span[data-v-0dd01fb8]:nth-child(2) {\n  -webkit-animation-delay: -0.85s;\n          animation-delay: -0.85s;\n}\n.sc-typing-indicator span[data-v-0dd01fb8]:nth-child(3) {\n  -webkit-animation-delay: -0.7s;\n          animation-delay: -0.7s;\n}\n@-webkit-keyframes bob-data-v-0dd01fb8 {\n10% {\n    -webkit-transform: translateY(-10px);\n            transform: translateY(-10px);\n    background-color: #9E9DA2;\n}\n50% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n    background-color: #B6B5BA;\n}\n}\n@keyframes bob-data-v-0dd01fb8 {\n10% {\n    -webkit-transform: translateY(-10px);\n            transform: translateY(-10px);\n    background-color: #9E9DA2;\n}\n50% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n    background-color: #B6B5BA;\n}\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/TypingMessage.vue"],"names":[],"mappings":";AAkBA;EACA,mBAAA;EACA,mBAAA;EACA,mBAAA;CACA;AAEA;EACA,sBAAA;EACA,0BAAA;EACA,YAAA;EACA,aAAA;EACA,oBAAA;EACA,kBAAA;EACA,mDAAA;UAAA,2CAAA;CACA;;AAEA,mBAAA;AACA;EACA,6BAAA;UAAA,qBAAA;CACA;AACA;EACA,gCAAA;UAAA,wBAAA;CACA;AACA;EACA,+BAAA;UAAA,uBAAA;CACA;AAEA;AACA;IACA,qCAAA;YAAA,6BAAA;IACA,0BAAA;CACA;AACA;IACA,iCAAA;YAAA,yBAAA;IACA,0BAAA;CACA;CACA;AATA;AACA;IACA,qCAAA;YAAA,6BAAA;IACA,0BAAA;CACA;AACA;IACA,iCAAA;YAAA,yBAAA;IACA,0BAAA;CACA;CACA","file":"TypingMessage.vue","sourcesContent":["<template>\n  <div class=\"sc-typing-indicator\" :style=\"messageColors\">\n    <span></span>\n    <span></span>\n    <span></span>\n  </div>\n</template>\n<script>\nexport default {\n  props: {\n    messageColors: {\n      type: Object,\n      required: true\n    }\n  }\n}\n</script>\n<style scoped>\n.sc-typing-indicator {\n  text-align: center;\n  padding: 17px 20px;\n  border-radius: 6px;\n}\n\n.sc-typing-indicator span {\n  display: inline-block;\n  background-color: #B6B5BA;\n  width: 10px;\n  height: 10px;\n  border-radius: 100%;\n  margin-right: 3px;\n  animation: bob 2s infinite;\n}\n\n/* SAFARI GLITCH */\n.sc-typing-indicator span:nth-child(1) {\n  animation-delay: -1s;\n}\n.sc-typing-indicator span:nth-child(2) {\n  animation-delay: -0.85s;\n}\n.sc-typing-indicator span:nth-child(3) {\n  animation-delay: -0.7s;\n}\n\n@keyframes bob {\n  10% {\n    transform: translateY(-10px);\n    background-color: #9E9DA2;\n  }\n  50% {\n    transform: translateY(0);\n    background-color: #B6B5BA;\n  }\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-typing-indicator[data-v-0dd01fb8] {\n  text-align: center;\n  padding: 17px 20px;\n  border-radius: 6px;\n}\n.sc-typing-indicator span[data-v-0dd01fb8] {\n  display: inline-block;\n  background-color: #B6B5BA;\n  width: 10px;\n  height: 10px;\n  border-radius: 100%;\n  margin-right: 3px;\n  -webkit-animation: bob-data-v-0dd01fb8 2s infinite;\n          animation: bob-data-v-0dd01fb8 2s infinite;\n}\n\n/* SAFARI GLITCH */\n.sc-typing-indicator span[data-v-0dd01fb8]:nth-child(1) {\n  -webkit-animation-delay: -1s;\n          animation-delay: -1s;\n}\n.sc-typing-indicator span[data-v-0dd01fb8]:nth-child(2) {\n  -webkit-animation-delay: -0.85s;\n          animation-delay: -0.85s;\n}\n.sc-typing-indicator span[data-v-0dd01fb8]:nth-child(3) {\n  -webkit-animation-delay: -0.7s;\n          animation-delay: -0.7s;\n}\n@-webkit-keyframes bob-data-v-0dd01fb8 {\n10% {\n    -webkit-transform: translateY(-10px);\n            transform: translateY(-10px);\n    background-color: #9E9DA2;\n}\n50% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n    background-color: #B6B5BA;\n}\n}\n@keyframes bob-data-v-0dd01fb8 {\n10% {\n    -webkit-transform: translateY(-10px);\n            transform: translateY(-10px);\n    background-color: #9E9DA2;\n}\n50% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n    background-color: #B6B5BA;\n}\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/TypingMessage.vue"],"names":[],"mappings":";AAkBA;EACA,mBAAA;EACA,mBAAA;EACA,mBAAA;CACA;AAEA;EACA,sBAAA;EACA,0BAAA;EACA,YAAA;EACA,aAAA;EACA,oBAAA;EACA,kBAAA;EACA,mDAAA;UAAA,2CAAA;CACA;;AAEA,mBAAA;AACA;EACA,6BAAA;UAAA,qBAAA;CACA;AACA;EACA,gCAAA;UAAA,wBAAA;CACA;AACA;EACA,+BAAA;UAAA,uBAAA;CACA;AAEA;AACA;IACA,qCAAA;YAAA,6BAAA;IACA,0BAAA;CACA;AACA;IACA,iCAAA;YAAA,yBAAA;IACA,0BAAA;CACA;CACA;AATA;AACA;IACA,qCAAA;YAAA,6BAAA;IACA,0BAAA;CACA;AACA;IACA,iCAAA;YAAA,yBAAA;IACA,0BAAA;CACA;CACA","file":"TypingMessage.vue","sourcesContent":["<template>\n  <div class=\"sc-typing-indicator\" :style=\"messageColors\">\n    <span></span>\n    <span></span>\n    <span></span>\n  </div>\n</template>\n<script>\nexport default {\n  props: {\n    messageColors: {\n      type: Object,\n      required: true\n    }\n  }\n}\n</script>\n<style scoped>\n.sc-typing-indicator {\n  text-align: center;\n  padding: 17px 20px;\n  border-radius: 6px;\n}\n\n.sc-typing-indicator span {\n  display: inline-block;\n  background-color: #B6B5BA;\n  width: 10px;\n  height: 10px;\n  border-radius: 100%;\n  margin-right: 3px;\n  animation: bob 2s infinite;\n}\n\n/* SAFARI GLITCH */\n.sc-typing-indicator span:nth-child(1) {\n  animation-delay: -1s;\n}\n.sc-typing-indicator span:nth-child(2) {\n  animation-delay: -0.85s;\n}\n.sc-typing-indicator span:nth-child(3) {\n  animation-delay: -0.7s;\n}\n\n@keyframes bob {\n  10% {\n    transform: translateY(-10px);\n    background-color: #9E9DA2;\n  }\n  50% {\n    transform: translateY(0);\n    background-color: #B6B5BA;\n  }\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -13924,7 +13951,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-chat-window[data-v-353e1b70] {\n  width: 370px;\n  height: calc(100% - 120px);\n  max-height: 590px;\n  position: fixed;\n  right: 25px;\n  bottom: 100px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  -webkit-box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.1);\n          box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.1);\n  background: white;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  -webkit-transition: 0.3s ease-in-out;\n  transition: 0.3s ease-in-out;\n  border-radius: 10px;\n  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;\n}\n.sc-chat-window.closed[data-v-353e1b70] {\n  opacity: 0;\n  visibility: hidden;\n  bottom: 90px;\n}\n.sc-message--me[data-v-353e1b70] {\n  text-align: right;\n}\n.sc-message--them[data-v-353e1b70] {\n  text-align: left;\n}\n@media (max-width: 450px) {\n.sc-chat-window[data-v-353e1b70] {\n    width: 100%;\n    height: 100%;\n    max-height: 100%;\n    right: 0px;\n    bottom: 0px;\n    border-radius: 0px;\n}\n.sc-chat-window[data-v-353e1b70] {\n    -webkit-transition: 0.1s ease-in-out;\n    transition: 0.1s ease-in-out;\n}\n.sc-chat-window.closed[data-v-353e1b70] {\n    bottom: 0px;\n}\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/ChatWindow.vue"],"names":[],"mappings":";AA+HA;EACA,aAAA;EACA,2BAAA;EACA,kBAAA;EACA,gBAAA;EACA,YAAA;EACA,cAAA;EACA,+BAAA;UAAA,uBAAA;EACA,8DAAA;UAAA,sDAAA;EACA,kBAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;EACA,6BAAA;EAAA,8BAAA;MAAA,2BAAA;UAAA,uBAAA;EACA,0BAAA;MAAA,uBAAA;UAAA,+BAAA;EACA,qCAAA;EAAA,6BAAA;EACA,oBAAA;EACA,4DAAA;CACA;AAEA;EACA,WAAA;EACA,mBAAA;EACA,aAAA;CACA;AAEA;EACA,kBAAA;CACA;AACA;EACA,iBAAA;CACA;AAEA;AACA;IACA,YAAA;IACA,aAAA;IACA,iBAAA;IACA,WAAA;IACA,YAAA;IACA,mBAAA;CACA;AACA;IACA,qCAAA;IAAA,6BAAA;CACA;AACA;IACA,YAAA;CACA;CACA","file":"ChatWindow.vue","sourcesContent":["<template>\n  <div class=\"sc-chat-window\" :class=\"{opened: isOpen, closed: !isOpen}\">\n    <Header\n      :title=\"title\"\n      :imageUrl=\"titleImageUrl\"\n      :onClose=\"onClose\"\n      :colors=\"colors\"\n      @userList=\"handleUserListToggle\"\n    />\n    <UserList \n      v-if=\"showUserList\"\n      :participants=\"participants\"\n    />\n    <MessageList\n      v-if=\"!showUserList\"\n      :messages=\"messages\"\n      :participants=\"participants\"\n      :showTypingIndicator=\"showTypingIndicator\"\n      :colors=\"colors\"\n      :alwaysScrollToBottom=\"alwaysScrollToBottom\"\n      :messageStyling=\"messageStyling\"\n    />\n    <UserInput\n      v-if=\"!showUserList\"\n      :showEmoji=\"showEmoji\"\n      :onSubmit=\"onUserInputSubmit\"\n      :suggestions=\"getSuggestions()\"\n      :showFile=\"showFile\"\n      :placeholder=\"placeholder\"\n      :colors=\"colors\" />\n  </div>\n</template>\n\n<script>\nimport Header from './Header.vue'\nimport MessageList from './MessageList.vue'\nimport UserInput from './UserInput.vue'\nimport UserList from './UserList.vue'\n\nexport default {\n  components: {\n    Header,\n    MessageList,\n    UserInput,\n    UserList\n  },\n  props: {\n    showEmoji: {\n      type: Boolean,\n      default: false\n    },\n    showFile: {\n      type: Boolean,\n      default: false\n    },\n    participants: {\n      type: Array,\n      required: true\n    },\n    title: {\n      type: String,\n      required: true\n    },\n    titleImageUrl: {\n      type: String,\n      default: ''\n    },\n    onUserInputSubmit: {\n      type: Function,\n      required: true\n    },\n    onClose: {\n      type: Function,\n      required: true\n    },\n    messageList: {\n      type: Array,\n      default: () => []\n    },\n    isOpen: {\n      type: Boolean,\n      default: () => false\n    },\n    placeholder: {\n      type: String,\n      default: 'Write a reply'\n    },\n    showTypingIndicator: {\n      type: String,\n      required: true\n    },\n    colors: {\n      type: Object,\n      required: true\n    },\n    alwaysScrollToBottom: {\n      type: Boolean,\n      required: true\n    },\n    messageStyling: {\n      type: Boolean,\n      required: true\n    }\n  },\n  data() {\n    return {\n      showUserList: false\n    }\n  },\n  computed: {\n    messages() {\n      let messages = this.messageList\n\n      return messages\n    }\n  },\n  methods: {\n    handleUserListToggle(showUserList) {\n      this.showUserList = showUserList\n    },\n    getSuggestions(){\n      return this.messages.length > 0 ? this.messages[this.messages.length - 1].suggestions : []\n    }\n  }\n}\n</script>\n<style scoped>\n.sc-chat-window {\n  width: 370px;\n  height: calc(100% - 120px);\n  max-height: 590px;\n  position: fixed;\n  right: 25px;\n  bottom: 100px;\n  box-sizing: border-box;\n  box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.1);\n  background: white;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  transition: 0.3s ease-in-out;\n  border-radius: 10px;\n  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;\n}\n\n.sc-chat-window.closed {\n  opacity: 0;\n  visibility: hidden;\n  bottom: 90px;\n}\n\n.sc-message--me {\n  text-align: right;\n}\n.sc-message--them {\n  text-align: left;\n}\n\n@media (max-width: 450px) {\n  .sc-chat-window {\n    width: 100%;\n    height: 100%;\n    max-height: 100%;\n    right: 0px;\n    bottom: 0px;\n    border-radius: 0px;\n  }\n  .sc-chat-window {\n    transition: 0.1s ease-in-out;\n  }\n  .sc-chat-window.closed {\n    bottom: 0px;\n  }\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-chat-window[data-v-353e1b70] {\n  width: 370px;\n  height: calc(100% - 120px);\n  max-height: 590px;\n  position: fixed;\n  right: 25px;\n  bottom: 100px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  -webkit-box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.1);\n          box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.1);\n  background: white;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  -webkit-transition: 0.3s ease-in-out;\n  transition: 0.3s ease-in-out;\n  border-radius: 10px;\n  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;\n}\n.sc-chat-window.closed[data-v-353e1b70] {\n  opacity: 0;\n  visibility: hidden;\n  bottom: 90px;\n}\n.sc-message--me[data-v-353e1b70] {\n  text-align: right;\n}\n.sc-message--them[data-v-353e1b70] {\n  text-align: left;\n}\n@media (max-width: 450px) {\n.sc-chat-window[data-v-353e1b70] {\n    width: 100%;\n    height: 100%;\n    max-height: 100%;\n    right: 0px;\n    bottom: 0px;\n    border-radius: 0px;\n}\n.sc-chat-window[data-v-353e1b70] {\n    -webkit-transition: 0.1s ease-in-out;\n    transition: 0.1s ease-in-out;\n}\n.sc-chat-window.closed[data-v-353e1b70] {\n    bottom: 0px;\n}\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/ChatWindow.vue"],"names":[],"mappings":";AA+HA;EACA,aAAA;EACA,2BAAA;EACA,kBAAA;EACA,gBAAA;EACA,YAAA;EACA,cAAA;EACA,+BAAA;UAAA,uBAAA;EACA,8DAAA;UAAA,sDAAA;EACA,kBAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;EACA,6BAAA;EAAA,8BAAA;MAAA,2BAAA;UAAA,uBAAA;EACA,0BAAA;MAAA,uBAAA;UAAA,+BAAA;EACA,qCAAA;EAAA,6BAAA;EACA,oBAAA;EACA,4DAAA;CACA;AAEA;EACA,WAAA;EACA,mBAAA;EACA,aAAA;CACA;AAEA;EACA,kBAAA;CACA;AACA;EACA,iBAAA;CACA;AAEA;AACA;IACA,YAAA;IACA,aAAA;IACA,iBAAA;IACA,WAAA;IACA,YAAA;IACA,mBAAA;CACA;AACA;IACA,qCAAA;IAAA,6BAAA;CACA;AACA;IACA,YAAA;CACA;CACA","file":"ChatWindow.vue","sourcesContent":["<template>\n  <div class=\"sc-chat-window\" :class=\"{opened: isOpen, closed: !isOpen}\">\n    <Header\n      :title=\"title\"\n      :imageUrl=\"titleImageUrl\"\n      :onClose=\"onClose\"\n      :colors=\"colors\"\n      @userList=\"handleUserListToggle\"\n    />\n    <UserList \n      v-if=\"showUserList\"\n      :participants=\"participants\"\n    />\n    <MessageList\n      v-if=\"!showUserList\"\n      :messages=\"messages\"\n      :participants=\"participants\"\n      :showTypingIndicator=\"showTypingIndicator\"\n      :colors=\"colors\"\n      :alwaysScrollToBottom=\"alwaysScrollToBottom\"\n      :messageStyling=\"messageStyling\"\n    />\n    <UserInput\n      v-if=\"!showUserList\"\n      :showEmoji=\"showEmoji\"\n      :onSubmit=\"onUserInputSubmit\"\n      :suggestions=\"getSuggestions()\"\n      :showFile=\"showFile\"\n      :placeholder=\"placeholder\"\n      :colors=\"colors\" />\n  </div>\n</template>\n\n<script>\nimport Header from './Header.vue'\nimport MessageList from './MessageList.vue'\nimport UserInput from './UserInput.vue'\nimport UserList from './UserList.vue'\n\nexport default {\n  components: {\n    Header,\n    MessageList,\n    UserInput,\n    UserList\n  },\n  props: {\n    showEmoji: {\n      type: Boolean,\n      default: false\n    },\n    showFile: {\n      type: Boolean,\n      default: false\n    },\n    participants: {\n      type: Array,\n      required: true\n    },\n    title: {\n      type: String,\n      required: true\n    },\n    titleImageUrl: {\n      type: String,\n      default: ''\n    },\n    onUserInputSubmit: {\n      type: Function,\n      required: true\n    },\n    onClose: {\n      type: Function,\n      required: true\n    },\n    messageList: {\n      type: Array,\n      default: () => []\n    },\n    isOpen: {\n      type: Boolean,\n      default: () => false\n    },\n    placeholder: {\n      type: String,\n      default: 'Write a reply'\n    },\n    showTypingIndicator: {\n      type: String,\n      required: true\n    },\n    colors: {\n      type: Object,\n      required: true\n    },\n    alwaysScrollToBottom: {\n      type: Boolean,\n      required: true\n    },\n    messageStyling: {\n      type: Boolean,\n      required: true\n    }\n  },\n  data() {\n    return {\n      showUserList: false\n    }\n  },\n  computed: {\n    messages() {\n      let messages = this.messageList\n\n      return messages\n    }\n  },\n  methods: {\n    handleUserListToggle(showUserList) {\n      this.showUserList = showUserList\n    },\n    getSuggestions(){\n      return this.messages.length > 0 ? this.messages[this.messages.length - 1].suggestions : []\n    }\n  }\n}\n</script>\n<style scoped>\n.sc-chat-window {\n  width: 370px;\n  height: calc(100% - 120px);\n  max-height: 590px;\n  position: fixed;\n  right: 25px;\n  bottom: 100px;\n  box-sizing: border-box;\n  box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.1);\n  background: white;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  transition: 0.3s ease-in-out;\n  border-radius: 10px;\n  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;\n}\n\n.sc-chat-window.closed {\n  opacity: 0;\n  visibility: hidden;\n  bottom: 90px;\n}\n\n.sc-message--me {\n  text-align: right;\n}\n.sc-message--them {\n  text-align: left;\n}\n\n@media (max-width: 450px) {\n  .sc-chat-window {\n    width: 100%;\n    height: 100%;\n    max-height: 100%;\n    right: 0px;\n    bottom: 0px;\n    border-radius: 0px;\n  }\n  .sc-chat-window {\n    transition: 0.1s ease-in-out;\n  }\n  .sc-chat-window.closed {\n    bottom: 0px;\n  }\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -13939,7 +13966,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.user-list[data-v-38a93891] {\n  height: 100%;\n  overflow: auto;\n  padding-left: 5px;\n  padding-top: 8px;\n}\n.img-msg[data-v-38a93891] {\n  border-radius: 50%;\n  width: 50px;\n  margin-right: 5px;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/UserList.vue"],"names":[],"mappings":";AAuBA;EACA,aAAA;EACA,eAAA;EACA,kBAAA;EACA,iBAAA;CACA;AACA;EACA,mBAAA;EACA,YAAA;EACA,kBAAA;CACA","file":"UserList.vue","sourcesContent":["<template>\n  <div class=\"user-list\">\n    <table class=\"\" style=\"padding-top: 5px\">\n      <tbody>\n        <tr v-for=\"user in participants\" :key=\"user.id\">\n            <td style=\"text-align: center;\"><img :src=\"user.imageUrl\" class=\"img-msg\"/></td>\n            <td>{{user.name}}</td>\n        </tr>\n      </tbody>\n  </table>\n  </div>\n</template>\n<script>\nexport default {\n  props: {\n    participants: {\n      type: Array,\n      required: true\n    }\n  }\n}\n</script>\n<style scoped>\n  .user-list {\n    height: 100%;\n    overflow: auto;\n    padding-left: 5px;\n    padding-top: 8px;\n  }\n  .img-msg {\n    border-radius: 50%;\n    width: 50px;\n    margin-right: 5px;\n  }\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.user-list[data-v-38a93891] {\n  height: 100%;\n  overflow: auto;\n  padding-left: 5px;\n  padding-top: 8px;\n}\n.img-msg[data-v-38a93891] {\n  border-radius: 50%;\n  width: 50px;\n  margin-right: 5px;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/UserList.vue"],"names":[],"mappings":";AAuBA;EACA,aAAA;EACA,eAAA;EACA,kBAAA;EACA,iBAAA;CACA;AACA;EACA,mBAAA;EACA,YAAA;EACA,kBAAA;CACA","file":"UserList.vue","sourcesContent":["<template>\n  <div class=\"user-list\">\n    <table class=\"\" style=\"padding-top: 5px\">\n      <tbody>\n        <tr v-for=\"user in participants\" :key=\"user.id\">\n            <td style=\"text-align: center;\"><img :src=\"user.imageUrl\" class=\"img-msg\"/></td>\n            <td>{{user.name}}</td>\n        </tr>\n      </tbody>\n  </table>\n  </div>\n</template>\n<script>\nexport default {\n  props: {\n    participants: {\n      type: Array,\n      required: true\n    }\n  }\n}\n</script>\n<style scoped>\n  .user-list {\n    height: 100%;\n    overflow: auto;\n    padding-left: 5px;\n    padding-top: 8px;\n  }\n  .img-msg {\n    border-radius: 50%;\n    width: 50px;\n    margin-right: 5px;\n  }\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -13954,7 +13981,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n#file-input[data-v-3a276d26] {\n  cursor: pointer;\n}\n.sc-user-input--file-icon-wrapper[data-v-3a276d26] {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n  cursor: pointer;\n}\n.sc-user-input--file-icon[data-v-3a276d26] {\n  height: 20px;\n  width: 20px;\n  -ms-flex-item-align: center;\n      align-self: center;\n  outline: none;\n}\n.sc-user-input--file-icon:hover path[data-v-3a276d26] {\n  -webkit-filter: contrast(15%);\n          filter: contrast(15%);\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/FileIcons.vue"],"names":[],"mappings":";AAgDA;EACA,gBAAA;CACA;AAEA;EACA,iBAAA;EACA,aAAA;EACA,aAAA;EACA,YAAA;EACA,cAAA;EACA,gBAAA;CACA;AAEA;EACA,aAAA;EACA,YAAA;EACA,4BAAA;MAAA,mBAAA;EACA,cAAA;CACA;AAEA;EACA,8BAAA;UAAA,sBAAA;CACA","file":"FileIcons.vue","sourcesContent":["<template>\n  <label htmlFor='file-input' >\n    <button\n      class=\"sc-user-input--file-icon-wrapper\"\n      type='button'\n    >\n      <svg\n        version=\"1.1\"\n        xmlns=\"http://www.w3.org/2000/svg\"\n        class=\"sc-user-input--file-icon\"\n        x='0px'\n        y='0px'\n        width='24px'\n        height='24px'\n        viewBox='0 0 37.393 37.393'\n        enableBackground='new 0 0 37.393 37.393'\n      >\n        <path :style=\"{fill: color}\" d=\"M20.807 10.22l-2.030-2.029-10.15 10.148c-1.682 1.681-1.682 4.408 0 6.089s4.408 1.681 6.090 0l12.18-12.178c2.804-2.802 2.804-7.346 0-10.148-2.802-2.803-7.347-2.803-10.149 0l-12.788 12.787c-0.009 0.009-0.019 0.018-0.027 0.026-3.909 3.909-3.909 10.245 0 14.153 3.908 3.908 10.246 3.908 14.156 0 0.009-0.009 0.016-0.018 0.026-0.027l0.001 0.001 8.729-8.728-2.031-2.029-8.729 8.727c-0.009 0.008-0.018 0.018-0.026 0.026-2.784 2.783-7.312 2.783-10.096 0-2.783-2.783-2.783-7.31 0-10.093 0.010-0.009 0.019-0.018 0.028-0.026l-0.001-0.002 12.79-12.786c1.678-1.679 4.411-1.679 6.090 0s1.678 4.411 0 6.089l-12.18 12.178c-0.56 0.56-1.47 0.56-2.030 0-0.559-0.559-0.559-1.47 0-2.029l10.15-10.149z\"></path>\n      </svg>\n    </button>\n    <input type='file' id='file-input' @change=\"_handleChange\" @click=\"_handleClick\" />\n  </label>\n</template>\n\n<script>\nexport default {\n  props: {\n    onChange: {\n      type: Function,\n      required: true\n    },\n    color: {\n      type: String,\n      required: true\n    }\n  },\n  methods: {\n    _handleClick (e) {\n      e.target.value = null\n    },\n    _handleChange (e) {\n      this.onChange(e.target.files[0])\n    }\n  }\n}\n</script>\n\n<style scoped>\n#file-input {\n  cursor: pointer;\n}\n\n.sc-user-input--file-icon-wrapper {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n  cursor: pointer;\n}\n\n.sc-user-input--file-icon {\n  height: 20px;\n  width: 20px;\n  align-self: center;\n  outline: none;\n}\n\n.sc-user-input--file-icon:hover path {\n  filter: contrast(15%);\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n#file-input[data-v-3a276d26] {\n  cursor: pointer;\n}\n.sc-user-input--file-icon-wrapper[data-v-3a276d26] {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n  cursor: pointer;\n}\n.sc-user-input--file-icon[data-v-3a276d26] {\n  height: 20px;\n  width: 20px;\n  -ms-flex-item-align: center;\n      align-self: center;\n  outline: none;\n}\n.sc-user-input--file-icon:hover path[data-v-3a276d26] {\n  -webkit-filter: contrast(15%);\n          filter: contrast(15%);\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/FileIcons.vue"],"names":[],"mappings":";AAgDA;EACA,gBAAA;CACA;AAEA;EACA,iBAAA;EACA,aAAA;EACA,aAAA;EACA,YAAA;EACA,cAAA;EACA,gBAAA;CACA;AAEA;EACA,aAAA;EACA,YAAA;EACA,4BAAA;MAAA,mBAAA;EACA,cAAA;CACA;AAEA;EACA,8BAAA;UAAA,sBAAA;CACA","file":"FileIcons.vue","sourcesContent":["<template>\n  <label htmlFor='file-input' >\n    <button\n      class=\"sc-user-input--file-icon-wrapper\"\n      type='button'\n    >\n      <svg\n        version=\"1.1\"\n        xmlns=\"http://www.w3.org/2000/svg\"\n        class=\"sc-user-input--file-icon\"\n        x='0px'\n        y='0px'\n        width='24px'\n        height='24px'\n        viewBox='0 0 37.393 37.393'\n        enableBackground='new 0 0 37.393 37.393'\n      >\n        <path :style=\"{fill: color}\" d=\"M20.807 10.22l-2.030-2.029-10.15 10.148c-1.682 1.681-1.682 4.408 0 6.089s4.408 1.681 6.090 0l12.18-12.178c2.804-2.802 2.804-7.346 0-10.148-2.802-2.803-7.347-2.803-10.149 0l-12.788 12.787c-0.009 0.009-0.019 0.018-0.027 0.026-3.909 3.909-3.909 10.245 0 14.153 3.908 3.908 10.246 3.908 14.156 0 0.009-0.009 0.016-0.018 0.026-0.027l0.001 0.001 8.729-8.728-2.031-2.029-8.729 8.727c-0.009 0.008-0.018 0.018-0.026 0.026-2.784 2.783-7.312 2.783-10.096 0-2.783-2.783-2.783-7.31 0-10.093 0.010-0.009 0.019-0.018 0.028-0.026l-0.001-0.002 12.79-12.786c1.678-1.679 4.411-1.679 6.090 0s1.678 4.411 0 6.089l-12.18 12.178c-0.56 0.56-1.47 0.56-2.030 0-0.559-0.559-0.559-1.47 0-2.029l10.15-10.149z\"></path>\n      </svg>\n    </button>\n    <input type='file' id='file-input' @change=\"_handleChange\" @click=\"_handleClick\" />\n  </label>\n</template>\n\n<script>\nexport default {\n  props: {\n    onChange: {\n      type: Function,\n      required: true\n    },\n    color: {\n      type: String,\n      required: true\n    }\n  },\n  methods: {\n    _handleClick (e) {\n      e.target.value = null\n    },\n    _handleChange (e) {\n      this.onChange(e.target.files[0])\n    }\n  }\n}\n</script>\n\n<style scoped>\n#file-input {\n  cursor: pointer;\n}\n\n.sc-user-input--file-icon-wrapper {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n  cursor: pointer;\n}\n\n.sc-user-input--file-icon {\n  height: 20px;\n  width: 20px;\n  align-self: center;\n  outline: none;\n}\n\n.sc-user-input--file-icon:hover path {\n  filter: contrast(15%);\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -13969,7 +13996,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-message--emoji[data-v-3a6c7e69] {\n  font-size: 40px;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/EmojiMessage.vue"],"names":[],"mappings":";AAgBA;EACA,gBAAA;CACA","file":"EmojiMessage.vue","sourcesContent":["<template>\n  <div class=\"sc-message--emoji\">{{data.emoji}}</div>\n</template>\n\n<script>\nexport default {\n  props: {\n    data: {\n      type: Object,\n      required: true\n    }\n  }\n}\n</script>\n\n<style scoped>\n.sc-message--emoji {\n  font-size: 40px;\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-message--emoji[data-v-3a6c7e69] {\n  font-size: 40px;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/EmojiMessage.vue"],"names":[],"mappings":";AAgBA;EACA,gBAAA;CACA","file":"EmojiMessage.vue","sourcesContent":["<template>\n  <div class=\"sc-message--emoji\">{{data.emoji}}</div>\n</template>\n\n<script>\nexport default {\n  props: {\n    data: {\n      type: Object,\n      required: true\n    }\n  }\n}\n</script>\n\n<style scoped>\n.sc-message--emoji {\n  font-size: 40px;\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -13984,7 +14011,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-suggestions-row {\n  text-align: center;\n  background: inherit;\n}\n.sc-suggestions-element {\n  margin: 3px;\n  padding: 5px 10px 5px 10px;\n  border: 1px solid;\n  border-radius: 15px;\n  font-size: 14px;\n  background: inherit;\n  cursor: pointer;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/Suggestions.vue"],"names":[],"mappings":";AA2BA;EACA,mBAAA;EACA,oBAAA;CACA;AAEA;EACA,YAAA;EACA,2BAAA;EACA,kBAAA;EACA,oBAAA;EACA,gBAAA;EACA,oBAAA;EACA,gBAAA;CACA","file":"Suggestions.vue","sourcesContent":["<template>\n    <div class=\"sc-suggestions-row\" :style=\"{background: colors.messageList.bg}\">\n        <button class=\"sc-suggestions-element\" v-for=\"(suggestion, idx) in suggestions\" v-on:click=\"$emit('sendSuggestion', suggestion)\" \n        :style=\"{borderColor: colors.sentMessage.bg, color: colors.sentMessage.bg}\" :key=\"idx\">{{suggestion}}</button>\n    </div>\n</template>\n\n<script>\nexport default {\n    data() {\n        return {\n        }\n    },\n    props: {\n        suggestions: {\n            type: Array,\n            default: () => []\n        },\n        colors: {\n            type: Object,\n            required: true\n        }\n    }\n}\n</script>\n\n<style>\n.sc-suggestions-row {\n  text-align: center;\n  background: inherit;\n}\n\n.sc-suggestions-element {\n  margin: 3px;\n  padding: 5px 10px 5px 10px;\n  border: 1px solid;\n  border-radius: 15px;\n  font-size: 14px;\n  background: inherit;\n  cursor: pointer;\n}\n</style>"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-suggestions-row {\n  text-align: center;\n  background: inherit;\n}\n.sc-suggestions-element {\n  margin: 3px;\n  padding: 5px 10px 5px 10px;\n  border: 1px solid;\n  border-radius: 15px;\n  font-size: 14px;\n  background: inherit;\n  cursor: pointer;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/Suggestions.vue"],"names":[],"mappings":";AA2BA;EACA,mBAAA;EACA,oBAAA;CACA;AAEA;EACA,YAAA;EACA,2BAAA;EACA,kBAAA;EACA,oBAAA;EACA,gBAAA;EACA,oBAAA;EACA,gBAAA;CACA","file":"Suggestions.vue","sourcesContent":["<template>\n    <div class=\"sc-suggestions-row\" :style=\"{background: colors.messageList.bg}\">\n        <button class=\"sc-suggestions-element\" v-for=\"(suggestion, idx) in suggestions\" v-on:click=\"$emit('sendSuggestion', suggestion)\" \n        :style=\"{borderColor: colors.sentMessage.bg, color: colors.sentMessage.bg}\" :key=\"idx\">{{suggestion}}</button>\n    </div>\n</template>\n\n<script>\nexport default {\n    data() {\n        return {\n        }\n    },\n    props: {\n        suggestions: {\n            type: Array,\n            default: () => []\n        },\n        colors: {\n            type: Object,\n            required: true\n        }\n    }\n}\n</script>\n\n<style>\n.sc-suggestions-row {\n  text-align: center;\n  background: inherit;\n}\n\n.sc-suggestions-element {\n  margin: 3px;\n  padding: 5px 10px 5px 10px;\n  border: 1px solid;\n  border-radius: 15px;\n  font-size: 14px;\n  background: inherit;\n  cursor: pointer;\n}\n</style>"],"sourceRoot":""}]);
 
 // exports
 
@@ -13999,7 +14026,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-message--system[data-v-4aced000] {\n  padding: 8px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 12px;\n  line-height: 1.2;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased;\n  font-style: italic;\n  opacity: .55;\n}\n.sc-message--meta[data-v-4aced000] {\n  font-size: xx-small;\n  margin-bottom: 0px;\n  margin-top: 5px;\n  opacity: .5;\n  text-align: center;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/SystemMessage.vue"],"names":[],"mappings":";AAqBA;EACA,kBAAA;EACA,mBAAA;EACA,iBAAA;EACA,gBAAA;EACA,iBAAA;EACA,sBAAA;EACA,6CAAA;EACA,mBAAA;EACA,aAAA;CACA;AAEA;EACA,oBAAA;EACA,mBAAA;EACA,gBAAA;EACA,YAAA;EACA,mBAAA;CACA","file":"SystemMessage.vue","sourcesContent":["<template>\n  <div class=\"sc-message--system\" :style=\"messageColors\">{{data.text}}<p v-if=\"data.meta\" class='sc-message--meta' :style=\"{color: messageColors.color}\">{{data.meta}}</p>\n  </div>\n</template>\n\n<script>\nexport default {\n  props: {\n    data: {\n      type: Object,\n      required: true\n    },\n    messageColors: {\n      type: Object,\n      required: true\n    }\n  }\n}\n</script>\n\n<style scoped>\n.sc-message--system {\n  padding: 8px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 12px;\n  line-height: 1.2;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased;\n  font-style: italic;\n  opacity: .55;\n}\n\n.sc-message--meta {\n  font-size: xx-small;\n  margin-bottom: 0px;\n  margin-top: 5px;\n  opacity: .5;\n  text-align: center;\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-message--system[data-v-4aced000] {\n  padding: 8px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 12px;\n  line-height: 1.2;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased;\n  font-style: italic;\n  opacity: .55;\n}\n.sc-message--meta[data-v-4aced000] {\n  font-size: xx-small;\n  margin-bottom: 0px;\n  margin-top: 5px;\n  opacity: .5;\n  text-align: center;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/SystemMessage.vue"],"names":[],"mappings":";AAqBA;EACA,kBAAA;EACA,mBAAA;EACA,iBAAA;EACA,gBAAA;EACA,iBAAA;EACA,sBAAA;EACA,6CAAA;EACA,mBAAA;EACA,aAAA;CACA;AAEA;EACA,oBAAA;EACA,mBAAA;EACA,gBAAA;EACA,YAAA;EACA,mBAAA;CACA","file":"SystemMessage.vue","sourcesContent":["<template>\n  <div class=\"sc-message--system\" :style=\"messageColors\">{{data.text}}<p v-if=\"data.meta\" class='sc-message--meta' :style=\"{color: messageColors.color}\">{{data.meta}}</p>\n  </div>\n</template>\n\n<script>\nexport default {\n  props: {\n    data: {\n      type: Object,\n      required: true\n    },\n    messageColors: {\n      type: Object,\n      required: true\n    }\n  }\n}\n</script>\n\n<style scoped>\n.sc-message--system {\n  padding: 8px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 12px;\n  line-height: 1.2;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased;\n  font-style: italic;\n  opacity: .55;\n}\n\n.sc-message--meta {\n  font-size: xx-small;\n  margin-bottom: 0px;\n  margin-top: 5px;\n  opacity: .5;\n  text-align: center;\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -14014,7 +14041,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-message {\n  width: 300px;\n  margin: auto;\n  padding-bottom: 10px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.sc-message--content {\n  width: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.sc-message--content.sent {\n  -webkit-box-pack: end;\n      -ms-flex-pack: end;\n          justify-content: flex-end;\n}\n.sc-message--content.system {\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n}\n.sc-message--content.sent .sc-message--avatar {\n  display: none;\n}\n.sc-message--avatar {\n  background-repeat: no-repeat;\n  background-size: 100%;\n  background-position: center;\n  min-width: 30px;\n  min-height: 30px;\n  border-radius: 50%;\n  -ms-flex-item-align: center;\n      align-self: center;\n  margin-right: 15px;\n}\n.sc-message--meta {\n  font-size: xx-small;\n  margin-bottom: 0px;\n  color: white;\n  text-align: center;\n}\n@media (max-width: 450px) {\n.sc-message {\n    width: 80%;\n}\n}\n.sc-message--text {\n  padding: 5px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased;\n}\n.sc-message--content.sent .sc-message--text {\n  color: white;\n  background-color: #4e8cff;\n  max-width: calc(100% - 120px);\n  word-wrap: break-word;\n}\n.sc-message--text code {\n  font-family: 'Courier New', Courier, monospace !important;\n}\n.sc-message--content.received .sc-message--text {\n  color: #263238;\n  background-color: #f4f7f9;\n  margin-right: 40px;\n}\n.tooltip {\n  display: block !important;\n  z-index: 10000;\n}\n.tooltip .tooltip-inner {\n    background: black;\n    color: white;\n    border-radius: 16px;\n    padding: 5px 10px 4px;\n}\n.tooltip .tooltip-arrow {\n    width: 0;\n    height: 0;\n    border-style: solid;\n    position: absolute;\n    margin: 5px;\n    border-color: black;\n    z-index: 1;\n}\n.tooltip[x-placement^=\"top\"] {\n    margin-bottom: 5px;\n}\n.tooltip[x-placement^=\"top\"] .tooltip-arrow {\n      border-width: 5px 5px 0 5px;\n      border-left-color: transparent !important;\n      border-right-color: transparent !important;\n      border-bottom-color: transparent !important;\n      bottom: -5px;\n      left: calc(50% - 5px);\n      margin-top: 0;\n      margin-bottom: 0;\n}\n.tooltip[x-placement^=\"bottom\"] {\n    margin-top: 5px;\n}\n.tooltip[x-placement^=\"bottom\"] .tooltip-arrow {\n      border-width: 0 5px 5px 5px;\n      border-left-color: transparent !important;\n      border-right-color: transparent !important;\n      border-top-color: transparent !important;\n      top: -5px;\n      left: calc(50% - 5px);\n      margin-top: 0;\n      margin-bottom: 0;\n}\n.tooltip[x-placement^=\"right\"] {\n    margin-left: 5px;\n}\n.tooltip[x-placement^=\"right\"] .tooltip-arrow {\n      border-width: 5px 5px 5px 0;\n      border-left-color: transparent !important;\n      border-top-color: transparent !important;\n      border-bottom-color: transparent !important;\n      left: -5px;\n      top: calc(50% - 5px);\n      margin-left: 0;\n      margin-right: 0;\n}\n.tooltip[x-placement^=\"left\"] {\n    margin-right: 5px;\n}\n.tooltip[x-placement^=\"left\"] .tooltip-arrow {\n      border-width: 5px 0 5px 5px;\n      border-top-color: transparent !important;\n      border-right-color: transparent !important;\n      border-bottom-color: transparent !important;\n      right: -5px;\n      top: calc(50% - 5px);\n      margin-left: 0;\n      margin-right: 0;\n}\n.tooltip[aria-hidden='true'] {\n    visibility: hidden;\n    opacity: 0;\n    -webkit-transition: opacity .15s, visibility .15s;\n    transition: opacity .15s, visibility .15s;\n}\n.tooltip[aria-hidden='false'] {\n    visibility: visible;\n    opacity: 1;\n    -webkit-transition: opacity .15s;\n    transition: opacity .15s;\n}\n.tooltip.info .tooltip-inner {\n    background: rgba(0, 68, 153, 0.9);\n    color: white;\n    padding: 24px;\n    border-radius: 5px;\n    -webkit-box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);\n            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);\n}\n.tooltip.info .tooltip-arrow {\n    border-color: rgba(0, 68, 153, 0.9);\n}\n.tooltip.popover .popover-inner {\n    background: #f9f9f9;\n    color: black;\n    padding: 24px;\n    border-radius: 5px;\n    -webkit-box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);\n            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);\n}\n.tooltip.popover .popover-arrow {\n    border-color: #f9f9f9;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/Message.vue"],"names":[],"mappings":";AAAA;EACE,aAAa;EACb,aAAa;EACb,qBAAqB;EACrB,qBAAc;EAAd,qBAAc;EAAd,cAAc;CAAE;AAElB;EACE,YAAY;EACZ,qBAAc;EAAd,qBAAc;EAAd,cAAc;CAAE;AAElB;EACE,sBAA0B;MAA1B,mBAA0B;UAA1B,0BAA0B;CAAE;AAE9B;EACE,yBAAwB;MAAxB,sBAAwB;UAAxB,wBAAwB;CAAE;AAE5B;EACE,cAAc;CAAE;AAElB;EACE,6BAA6B;EAC7B,sBAAsB;EACtB,4BAA4B;EAC5B,gBAAgB;EAChB,iBAAiB;EACjB,mBAAmB;EACnB,4BAAmB;MAAnB,mBAAmB;EACnB,mBAAmB;CAAE;AAEvB;EACE,oBAAoB;EACpB,mBAAmB;EACnB,aAAa;EACb,mBAAmB;CAAE;AAEvB;AACE;IACE,WAAW;CAAE;CAAE;AAEnB;EACE,kBAAkB;EAClB,mBAAmB;EACnB,iBAAiB;EACjB,gBAAgB;EAChB,iBAAiB;EACjB,sBAAsB;EACtB,6CAA6C;CAAE;AAEjD;EACE,aAAa;EACb,0BAA0B;EAC1B,8BAA8B;EAC9B,sBAAsB;CAAE;AAE1B;EACE,0DAA0D;CAAE;AAE9D;EACE,eAAe;EACf,0BAA0B;EAC1B,mBAAmB;CAAE;AAEvB;EACE,0BAA0B;EAC1B,eAAe;CAAE;AACjB;IACE,kBAAkB;IAClB,aAAa;IACb,oBAAoB;IACpB,sBAAsB;CAAE;AAC1B;IACE,SAAS;IACT,UAAU;IACV,oBAAoB;IACpB,mBAAmB;IACnB,YAAY;IACZ,oBAAoB;IACpB,WAAW;CAAE;AACf;IACE,mBAAmB;CAAE;AACrB;MACE,4BAA4B;MAC5B,0CAA0C;MAC1C,2CAA2C;MAC3C,4CAA4C;MAC5C,aAAa;MACb,sBAAsB;MACtB,cAAc;MACd,iBAAiB;CAAE;AACvB;IACE,gBAAgB;CAAE;AAClB;MACE,4BAA4B;MAC5B,0CAA0C;MAC1C,2CAA2C;MAC3C,yCAAyC;MACzC,UAAU;MACV,sBAAsB;MACtB,cAAc;MACd,iBAAiB;CAAE;AACvB;IACE,iBAAiB;CAAE;AACnB;MACE,4BAA4B;MAC5B,0CAA0C;MAC1C,yCAAyC;MACzC,4CAA4C;MAC5C,WAAW;MACX,qBAAqB;MACrB,eAAe;MACf,gBAAgB;CAAE;AACtB;IACE,kBAAkB;CAAE;AACpB;MACE,4BAA4B;MAC5B,yCAAyC;MACzC,2CAA2C;MAC3C,4CAA4C;MAC5C,YAAY;MACZ,qBAAqB;MACrB,eAAe;MACf,gBAAgB;CAAE;AACtB;IACE,mBAAmB;IACnB,WAAW;IACX,kDAA0C;IAA1C,0CAA0C;CAAE;AAC9C;IACE,oBAAoB;IACpB,WAAW;IACX,iCAAyB;IAAzB,yBAAyB;CAAE;AAC7B;IACE,kCAAkC;IAClC,aAAa;IACb,cAAc;IACd,mBAAmB;IACnB,kDAA0C;YAA1C,0CAA0C;CAAE;AAC9C;IACE,oCAAoC;CAAE;AACxC;IACE,oBAAoB;IACpB,aAAa;IACb,cAAc;IACd,mBAAmB;IACnB,kDAA0C;YAA1C,0CAA0C;CAAE;AAC9C;IACE,sBAAsB;CAAE","file":"Message.vue","sourcesContent":[".sc-message {\n  width: 300px;\n  margin: auto;\n  padding-bottom: 10px;\n  display: flex; }\n\n.sc-message--content {\n  width: 100%;\n  display: flex; }\n\n.sc-message--content.sent {\n  justify-content: flex-end; }\n\n.sc-message--content.system {\n  justify-content: center; }\n\n.sc-message--content.sent .sc-message--avatar {\n  display: none; }\n\n.sc-message--avatar {\n  background-repeat: no-repeat;\n  background-size: 100%;\n  background-position: center;\n  min-width: 30px;\n  min-height: 30px;\n  border-radius: 50%;\n  align-self: center;\n  margin-right: 15px; }\n\n.sc-message--meta {\n  font-size: xx-small;\n  margin-bottom: 0px;\n  color: white;\n  text-align: center; }\n\n@media (max-width: 450px) {\n  .sc-message {\n    width: 80%; } }\n\n.sc-message--text {\n  padding: 5px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased; }\n\n.sc-message--content.sent .sc-message--text {\n  color: white;\n  background-color: #4e8cff;\n  max-width: calc(100% - 120px);\n  word-wrap: break-word; }\n\n.sc-message--text code {\n  font-family: 'Courier New', Courier, monospace !important; }\n\n.sc-message--content.received .sc-message--text {\n  color: #263238;\n  background-color: #f4f7f9;\n  margin-right: 40px; }\n\n.tooltip {\n  display: block !important;\n  z-index: 10000; }\n  .tooltip .tooltip-inner {\n    background: black;\n    color: white;\n    border-radius: 16px;\n    padding: 5px 10px 4px; }\n  .tooltip .tooltip-arrow {\n    width: 0;\n    height: 0;\n    border-style: solid;\n    position: absolute;\n    margin: 5px;\n    border-color: black;\n    z-index: 1; }\n  .tooltip[x-placement^=\"top\"] {\n    margin-bottom: 5px; }\n    .tooltip[x-placement^=\"top\"] .tooltip-arrow {\n      border-width: 5px 5px 0 5px;\n      border-left-color: transparent !important;\n      border-right-color: transparent !important;\n      border-bottom-color: transparent !important;\n      bottom: -5px;\n      left: calc(50% - 5px);\n      margin-top: 0;\n      margin-bottom: 0; }\n  .tooltip[x-placement^=\"bottom\"] {\n    margin-top: 5px; }\n    .tooltip[x-placement^=\"bottom\"] .tooltip-arrow {\n      border-width: 0 5px 5px 5px;\n      border-left-color: transparent !important;\n      border-right-color: transparent !important;\n      border-top-color: transparent !important;\n      top: -5px;\n      left: calc(50% - 5px);\n      margin-top: 0;\n      margin-bottom: 0; }\n  .tooltip[x-placement^=\"right\"] {\n    margin-left: 5px; }\n    .tooltip[x-placement^=\"right\"] .tooltip-arrow {\n      border-width: 5px 5px 5px 0;\n      border-left-color: transparent !important;\n      border-top-color: transparent !important;\n      border-bottom-color: transparent !important;\n      left: -5px;\n      top: calc(50% - 5px);\n      margin-left: 0;\n      margin-right: 0; }\n  .tooltip[x-placement^=\"left\"] {\n    margin-right: 5px; }\n    .tooltip[x-placement^=\"left\"] .tooltip-arrow {\n      border-width: 5px 0 5px 5px;\n      border-top-color: transparent !important;\n      border-right-color: transparent !important;\n      border-bottom-color: transparent !important;\n      right: -5px;\n      top: calc(50% - 5px);\n      margin-left: 0;\n      margin-right: 0; }\n  .tooltip[aria-hidden='true'] {\n    visibility: hidden;\n    opacity: 0;\n    transition: opacity .15s, visibility .15s; }\n  .tooltip[aria-hidden='false'] {\n    visibility: visible;\n    opacity: 1;\n    transition: opacity .15s; }\n  .tooltip.info .tooltip-inner {\n    background: rgba(0, 68, 153, 0.9);\n    color: white;\n    padding: 24px;\n    border-radius: 5px;\n    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1); }\n  .tooltip.info .tooltip-arrow {\n    border-color: rgba(0, 68, 153, 0.9); }\n  .tooltip.popover .popover-inner {\n    background: #f9f9f9;\n    color: black;\n    padding: 24px;\n    border-radius: 5px;\n    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1); }\n  .tooltip.popover .popover-arrow {\n    border-color: #f9f9f9; }\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-message {\n  width: 300px;\n  margin: auto;\n  padding-bottom: 10px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.sc-message--content {\n  width: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.sc-message--content.sent {\n  -webkit-box-pack: end;\n      -ms-flex-pack: end;\n          justify-content: flex-end;\n}\n.sc-message--content.system {\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n}\n.sc-message--content.sent .sc-message--avatar {\n  display: none;\n}\n.sc-message--avatar {\n  background-repeat: no-repeat;\n  background-size: 100%;\n  background-position: center;\n  min-width: 30px;\n  min-height: 30px;\n  border-radius: 50%;\n  -ms-flex-item-align: center;\n      align-self: center;\n  margin-right: 15px;\n}\n.sc-message--meta {\n  font-size: xx-small;\n  margin-bottom: 0px;\n  color: white;\n  text-align: center;\n}\n@media (max-width: 450px) {\n.sc-message {\n    width: 80%;\n}\n}\n.sc-message--text {\n  padding: 5px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased;\n}\n.sc-message--content.sent .sc-message--text {\n  color: white;\n  background-color: #4e8cff;\n  max-width: calc(100% - 120px);\n  word-wrap: break-word;\n}\n.sc-message--text code {\n  font-family: 'Courier New', Courier, monospace !important;\n}\n.sc-message--content.received .sc-message--text {\n  color: #263238;\n  background-color: #f4f7f9;\n  margin-right: 40px;\n}\n.tooltip {\n  display: block !important;\n  z-index: 10000;\n}\n.tooltip .tooltip-inner {\n    background: black;\n    color: white;\n    border-radius: 16px;\n    padding: 5px 10px 4px;\n}\n.tooltip .tooltip-arrow {\n    width: 0;\n    height: 0;\n    border-style: solid;\n    position: absolute;\n    margin: 5px;\n    border-color: black;\n    z-index: 1;\n}\n.tooltip[x-placement^=\"top\"] {\n    margin-bottom: 5px;\n}\n.tooltip[x-placement^=\"top\"] .tooltip-arrow {\n      border-width: 5px 5px 0 5px;\n      border-left-color: transparent !important;\n      border-right-color: transparent !important;\n      border-bottom-color: transparent !important;\n      bottom: -5px;\n      left: calc(50% - 5px);\n      margin-top: 0;\n      margin-bottom: 0;\n}\n.tooltip[x-placement^=\"bottom\"] {\n    margin-top: 5px;\n}\n.tooltip[x-placement^=\"bottom\"] .tooltip-arrow {\n      border-width: 0 5px 5px 5px;\n      border-left-color: transparent !important;\n      border-right-color: transparent !important;\n      border-top-color: transparent !important;\n      top: -5px;\n      left: calc(50% - 5px);\n      margin-top: 0;\n      margin-bottom: 0;\n}\n.tooltip[x-placement^=\"right\"] {\n    margin-left: 5px;\n}\n.tooltip[x-placement^=\"right\"] .tooltip-arrow {\n      border-width: 5px 5px 5px 0;\n      border-left-color: transparent !important;\n      border-top-color: transparent !important;\n      border-bottom-color: transparent !important;\n      left: -5px;\n      top: calc(50% - 5px);\n      margin-left: 0;\n      margin-right: 0;\n}\n.tooltip[x-placement^=\"left\"] {\n    margin-right: 5px;\n}\n.tooltip[x-placement^=\"left\"] .tooltip-arrow {\n      border-width: 5px 0 5px 5px;\n      border-top-color: transparent !important;\n      border-right-color: transparent !important;\n      border-bottom-color: transparent !important;\n      right: -5px;\n      top: calc(50% - 5px);\n      margin-left: 0;\n      margin-right: 0;\n}\n.tooltip[aria-hidden='true'] {\n    visibility: hidden;\n    opacity: 0;\n    -webkit-transition: opacity .15s, visibility .15s;\n    transition: opacity .15s, visibility .15s;\n}\n.tooltip[aria-hidden='false'] {\n    visibility: visible;\n    opacity: 1;\n    -webkit-transition: opacity .15s;\n    transition: opacity .15s;\n}\n.tooltip.info .tooltip-inner {\n    background: rgba(0, 68, 153, 0.9);\n    color: white;\n    padding: 24px;\n    border-radius: 5px;\n    -webkit-box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);\n            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);\n}\n.tooltip.info .tooltip-arrow {\n    border-color: rgba(0, 68, 153, 0.9);\n}\n.tooltip.popover .popover-inner {\n    background: #f9f9f9;\n    color: black;\n    padding: 24px;\n    border-radius: 5px;\n    -webkit-box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);\n            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);\n}\n.tooltip.popover .popover-arrow {\n    border-color: #f9f9f9;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/Message.vue"],"names":[],"mappings":";AAAA;EACE,aAAa;EACb,aAAa;EACb,qBAAqB;EACrB,qBAAc;EAAd,qBAAc;EAAd,cAAc;CAAE;AAElB;EACE,YAAY;EACZ,qBAAc;EAAd,qBAAc;EAAd,cAAc;CAAE;AAElB;EACE,sBAA0B;MAA1B,mBAA0B;UAA1B,0BAA0B;CAAE;AAE9B;EACE,yBAAwB;MAAxB,sBAAwB;UAAxB,wBAAwB;CAAE;AAE5B;EACE,cAAc;CAAE;AAElB;EACE,6BAA6B;EAC7B,sBAAsB;EACtB,4BAA4B;EAC5B,gBAAgB;EAChB,iBAAiB;EACjB,mBAAmB;EACnB,4BAAmB;MAAnB,mBAAmB;EACnB,mBAAmB;CAAE;AAEvB;EACE,oBAAoB;EACpB,mBAAmB;EACnB,aAAa;EACb,mBAAmB;CAAE;AAEvB;AACE;IACE,WAAW;CAAE;CAAE;AAEnB;EACE,kBAAkB;EAClB,mBAAmB;EACnB,iBAAiB;EACjB,gBAAgB;EAChB,iBAAiB;EACjB,sBAAsB;EACtB,6CAA6C;CAAE;AAEjD;EACE,aAAa;EACb,0BAA0B;EAC1B,8BAA8B;EAC9B,sBAAsB;CAAE;AAE1B;EACE,0DAA0D;CAAE;AAE9D;EACE,eAAe;EACf,0BAA0B;EAC1B,mBAAmB;CAAE;AAEvB;EACE,0BAA0B;EAC1B,eAAe;CAAE;AACjB;IACE,kBAAkB;IAClB,aAAa;IACb,oBAAoB;IACpB,sBAAsB;CAAE;AAC1B;IACE,SAAS;IACT,UAAU;IACV,oBAAoB;IACpB,mBAAmB;IACnB,YAAY;IACZ,oBAAoB;IACpB,WAAW;CAAE;AACf;IACE,mBAAmB;CAAE;AACrB;MACE,4BAA4B;MAC5B,0CAA0C;MAC1C,2CAA2C;MAC3C,4CAA4C;MAC5C,aAAa;MACb,sBAAsB;MACtB,cAAc;MACd,iBAAiB;CAAE;AACvB;IACE,gBAAgB;CAAE;AAClB;MACE,4BAA4B;MAC5B,0CAA0C;MAC1C,2CAA2C;MAC3C,yCAAyC;MACzC,UAAU;MACV,sBAAsB;MACtB,cAAc;MACd,iBAAiB;CAAE;AACvB;IACE,iBAAiB;CAAE;AACnB;MACE,4BAA4B;MAC5B,0CAA0C;MAC1C,yCAAyC;MACzC,4CAA4C;MAC5C,WAAW;MACX,qBAAqB;MACrB,eAAe;MACf,gBAAgB;CAAE;AACtB;IACE,kBAAkB;CAAE;AACpB;MACE,4BAA4B;MAC5B,yCAAyC;MACzC,2CAA2C;MAC3C,4CAA4C;MAC5C,YAAY;MACZ,qBAAqB;MACrB,eAAe;MACf,gBAAgB;CAAE;AACtB;IACE,mBAAmB;IACnB,WAAW;IACX,kDAA0C;IAA1C,0CAA0C;CAAE;AAC9C;IACE,oBAAoB;IACpB,WAAW;IACX,iCAAyB;IAAzB,yBAAyB;CAAE;AAC7B;IACE,kCAAkC;IAClC,aAAa;IACb,cAAc;IACd,mBAAmB;IACnB,kDAA0C;YAA1C,0CAA0C;CAAE;AAC9C;IACE,oCAAoC;CAAE;AACxC;IACE,oBAAoB;IACpB,aAAa;IACb,cAAc;IACd,mBAAmB;IACnB,kDAA0C;YAA1C,0CAA0C;CAAE;AAC9C;IACE,sBAAsB;CAAE","file":"Message.vue","sourcesContent":[".sc-message {\n  width: 300px;\n  margin: auto;\n  padding-bottom: 10px;\n  display: flex; }\n\n.sc-message--content {\n  width: 100%;\n  display: flex; }\n\n.sc-message--content.sent {\n  justify-content: flex-end; }\n\n.sc-message--content.system {\n  justify-content: center; }\n\n.sc-message--content.sent .sc-message--avatar {\n  display: none; }\n\n.sc-message--avatar {\n  background-repeat: no-repeat;\n  background-size: 100%;\n  background-position: center;\n  min-width: 30px;\n  min-height: 30px;\n  border-radius: 50%;\n  align-self: center;\n  margin-right: 15px; }\n\n.sc-message--meta {\n  font-size: xx-small;\n  margin-bottom: 0px;\n  color: white;\n  text-align: center; }\n\n@media (max-width: 450px) {\n  .sc-message {\n    width: 80%; } }\n\n.sc-message--text {\n  padding: 5px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased; }\n\n.sc-message--content.sent .sc-message--text {\n  color: white;\n  background-color: #4e8cff;\n  max-width: calc(100% - 120px);\n  word-wrap: break-word; }\n\n.sc-message--text code {\n  font-family: 'Courier New', Courier, monospace !important; }\n\n.sc-message--content.received .sc-message--text {\n  color: #263238;\n  background-color: #f4f7f9;\n  margin-right: 40px; }\n\n.tooltip {\n  display: block !important;\n  z-index: 10000; }\n  .tooltip .tooltip-inner {\n    background: black;\n    color: white;\n    border-radius: 16px;\n    padding: 5px 10px 4px; }\n  .tooltip .tooltip-arrow {\n    width: 0;\n    height: 0;\n    border-style: solid;\n    position: absolute;\n    margin: 5px;\n    border-color: black;\n    z-index: 1; }\n  .tooltip[x-placement^=\"top\"] {\n    margin-bottom: 5px; }\n    .tooltip[x-placement^=\"top\"] .tooltip-arrow {\n      border-width: 5px 5px 0 5px;\n      border-left-color: transparent !important;\n      border-right-color: transparent !important;\n      border-bottom-color: transparent !important;\n      bottom: -5px;\n      left: calc(50% - 5px);\n      margin-top: 0;\n      margin-bottom: 0; }\n  .tooltip[x-placement^=\"bottom\"] {\n    margin-top: 5px; }\n    .tooltip[x-placement^=\"bottom\"] .tooltip-arrow {\n      border-width: 0 5px 5px 5px;\n      border-left-color: transparent !important;\n      border-right-color: transparent !important;\n      border-top-color: transparent !important;\n      top: -5px;\n      left: calc(50% - 5px);\n      margin-top: 0;\n      margin-bottom: 0; }\n  .tooltip[x-placement^=\"right\"] {\n    margin-left: 5px; }\n    .tooltip[x-placement^=\"right\"] .tooltip-arrow {\n      border-width: 5px 5px 5px 0;\n      border-left-color: transparent !important;\n      border-top-color: transparent !important;\n      border-bottom-color: transparent !important;\n      left: -5px;\n      top: calc(50% - 5px);\n      margin-left: 0;\n      margin-right: 0; }\n  .tooltip[x-placement^=\"left\"] {\n    margin-right: 5px; }\n    .tooltip[x-placement^=\"left\"] .tooltip-arrow {\n      border-width: 5px 0 5px 5px;\n      border-top-color: transparent !important;\n      border-right-color: transparent !important;\n      border-bottom-color: transparent !important;\n      right: -5px;\n      top: calc(50% - 5px);\n      margin-left: 0;\n      margin-right: 0; }\n  .tooltip[aria-hidden='true'] {\n    visibility: hidden;\n    opacity: 0;\n    transition: opacity .15s, visibility .15s; }\n  .tooltip[aria-hidden='false'] {\n    visibility: visible;\n    opacity: 1;\n    transition: opacity .15s; }\n  .tooltip.info .tooltip-inner {\n    background: rgba(0, 68, 153, 0.9);\n    color: white;\n    padding: 24px;\n    border-radius: 5px;\n    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1); }\n  .tooltip.info .tooltip-arrow {\n    border-color: rgba(0, 68, 153, 0.9); }\n  .tooltip.popover .popover-inner {\n    background: #f9f9f9;\n    color: black;\n    padding: 24px;\n    border-radius: 5px;\n    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1); }\n  .tooltip.popover .popover-arrow {\n    border-color: #f9f9f9; }\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -14029,7 +14056,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-user-input--emoji-icon-wrapper[data-v-70db3787] {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n}\n.sc-user-input--emoji-icon-wrapper[data-v-70db3787]:focus {\n  outline: none;\n}\n.sc-user-input--emoji-icon[data-v-70db3787] {\n  height: 18px;\n  cursor: pointer;\n  -ms-flex-item-align: center;\n      align-self: center;\n}\n.sc-user-input--emoji-icon-wrapper:focus .sc-user-input--emoji-icon path[data-v-70db3787],\n.sc-user-input--emoji-icon-wrapper:focus .sc-user-input--emoji-icon circle[data-v-70db3787],\n.sc-user-input--emoji-icon.active path[data-v-70db3787],\n.sc-user-input--emoji-icon.active circle[data-v-70db3787],\n.sc-user-input--emoji-icon:hover path[data-v-70db3787],\n.sc-user-input--emoji-icon:hover circle[data-v-70db3787] {\n  -webkit-filter: contrast(15%);\n          filter: contrast(15%);\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/EmojiIcon.vue"],"names":[],"mappings":";AAgFA;EACA,iBAAA;EACA,aAAA;EACA,aAAA;EACA,YAAA;EACA,cAAA;CACA;AAEA;EACA,cAAA;CACA;AAEA;EACA,aAAA;EACA,gBAAA;EACA,4BAAA;MAAA,mBAAA;CACA;AAEA;;;;;;EAMA,8BAAA;UAAA,sBAAA;CACA","file":"EmojiIcon.vue","sourcesContent":["<template>\n  <div class=\"sc-user-input--picker-wrapper\">\n      <EmojiPicker \n        v-if=\"isActive\"\n        :onEmojiPicked=\"onEmojiPicked\"\n        :onBlur=\"_handlePickerBlur\"\n      />\n      <button\n        @click.prevent=\"_openPicker\"\n        class=\"sc-user-input--emoji-icon-wrapper\"\n      >\n        <svg\n          class=\"sc-user-input--emoji-icon\" :class=\"{active: isActive}\"\n          version=\"1.1\"\n          id=\"Layer_2\"\n          xmlns=\"http://www.w3.org/2000/svg\"\n          x=\"0px\"\n          y=\"0px\"\n          width=\"37.393px\"\n          height=\"37.393px\"\n          viewBox=\"0 0 37.393 37.393\"\n          enableBackground=\"new 0 0 37.393 37.393\"\n        >\n          <g>\n            <path :style=\"{fill: color}\" d=\"M18.696,37.393C8.387,37.393,0,29.006,0,18.696C0,8.387,8.387,0,18.696,0c10.31,0,18.696,8.387,18.696,18.696\n              C37.393,29.006,29.006,37.393,18.696,37.393z M18.696,2C9.49,2,2,9.49,2,18.696c0,9.206,7.49,16.696,16.696,16.696\n              c9.206,0,16.696-7.49,16.696-16.696C35.393,9.49,27.902,2,18.696,2z\"\n            />\n          </g>\n          <g>\n            <circle cx=\"12.379\" cy=\"14.359\" r=\"1.938\" :style=\"{fill: color}\" />\n          </g>\n          <g>\n            <circle cx=\"24.371\" cy=\"14.414\" r=\"1.992\" :style=\"{fill: color}\" />\n          </g>\n          <g>\n            <path :style=\"{fill: color}\" d=\"M18.035,27.453c-5.748,0-8.342-4.18-8.449-4.357c-0.286-0.473-0.135-1.087,0.338-1.373\n              c0.471-0.286,1.084-0.136,1.372,0.335c0.094,0.151,2.161,3.396,6.74,3.396c4.713,0,7.518-3.462,7.545-3.497\n              c0.343-0.432,0.973-0.504,1.405-0.161c0.433,0.344,0.505,0.973,0.161,1.405C27.009,23.374,23.703,27.453,18.035,27.453z\"\n            />\n          </g>\n        </svg>\n      </button>\n      </div>\n</template>\n\n<script>\nimport EmojiPicker from './EmojiPicker.vue'\n\nexport default {\n  components: {\n    EmojiPicker\n  },\n  data () {\n    return {\n      isActive: false\n    }\n  },\n  props: {\n    onEmojiPicked: {\n      type: Function,\n      required: true\n    },\n    color: {\n      type: String,\n      required: true\n    }\n  },\n  methods: {\n    _openPicker (e) {\n      this.isActive = !this.isActive\n    },\n    _handlePickerBlur () {\n      this.isActive = false\n    }\n  }\n}\n</script>\n\n<style scoped>\n.sc-user-input--emoji-icon-wrapper {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n}\n\n.sc-user-input--emoji-icon-wrapper:focus {\n  outline: none;\n}\n\n.sc-user-input--emoji-icon {\n  height: 18px;\n  cursor: pointer;\n  align-self: center;\n}\n\n.sc-user-input--emoji-icon-wrapper:focus .sc-user-input--emoji-icon path,\n.sc-user-input--emoji-icon-wrapper:focus .sc-user-input--emoji-icon circle,\n.sc-user-input--emoji-icon.active path,\n.sc-user-input--emoji-icon.active circle,\n.sc-user-input--emoji-icon:hover path,\n.sc-user-input--emoji-icon:hover circle {\n  filter: contrast(15%);\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-user-input--emoji-icon-wrapper[data-v-70db3787] {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n}\n.sc-user-input--emoji-icon-wrapper[data-v-70db3787]:focus {\n  outline: none;\n}\n.sc-user-input--emoji-icon[data-v-70db3787] {\n  height: 18px;\n  cursor: pointer;\n  -ms-flex-item-align: center;\n      align-self: center;\n}\n.sc-user-input--emoji-icon-wrapper:focus .sc-user-input--emoji-icon path[data-v-70db3787],\n.sc-user-input--emoji-icon-wrapper:focus .sc-user-input--emoji-icon circle[data-v-70db3787],\n.sc-user-input--emoji-icon.active path[data-v-70db3787],\n.sc-user-input--emoji-icon.active circle[data-v-70db3787],\n.sc-user-input--emoji-icon:hover path[data-v-70db3787],\n.sc-user-input--emoji-icon:hover circle[data-v-70db3787] {\n  -webkit-filter: contrast(15%);\n          filter: contrast(15%);\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/EmojiIcon.vue"],"names":[],"mappings":";AAgFA;EACA,iBAAA;EACA,aAAA;EACA,aAAA;EACA,YAAA;EACA,cAAA;CACA;AAEA;EACA,cAAA;CACA;AAEA;EACA,aAAA;EACA,gBAAA;EACA,4BAAA;MAAA,mBAAA;CACA;AAEA;;;;;;EAMA,8BAAA;UAAA,sBAAA;CACA","file":"EmojiIcon.vue","sourcesContent":["<template>\n  <div class=\"sc-user-input--picker-wrapper\">\n      <EmojiPicker \n        v-if=\"isActive\"\n        :onEmojiPicked=\"onEmojiPicked\"\n        :onBlur=\"_handlePickerBlur\"\n      />\n      <button\n        @click.prevent=\"_openPicker\"\n        class=\"sc-user-input--emoji-icon-wrapper\"\n      >\n        <svg\n          class=\"sc-user-input--emoji-icon\" :class=\"{active: isActive}\"\n          version=\"1.1\"\n          id=\"Layer_2\"\n          xmlns=\"http://www.w3.org/2000/svg\"\n          x=\"0px\"\n          y=\"0px\"\n          width=\"37.393px\"\n          height=\"37.393px\"\n          viewBox=\"0 0 37.393 37.393\"\n          enableBackground=\"new 0 0 37.393 37.393\"\n        >\n          <g>\n            <path :style=\"{fill: color}\" d=\"M18.696,37.393C8.387,37.393,0,29.006,0,18.696C0,8.387,8.387,0,18.696,0c10.31,0,18.696,8.387,18.696,18.696\n              C37.393,29.006,29.006,37.393,18.696,37.393z M18.696,2C9.49,2,2,9.49,2,18.696c0,9.206,7.49,16.696,16.696,16.696\n              c9.206,0,16.696-7.49,16.696-16.696C35.393,9.49,27.902,2,18.696,2z\"\n            />\n          </g>\n          <g>\n            <circle cx=\"12.379\" cy=\"14.359\" r=\"1.938\" :style=\"{fill: color}\" />\n          </g>\n          <g>\n            <circle cx=\"24.371\" cy=\"14.414\" r=\"1.992\" :style=\"{fill: color}\" />\n          </g>\n          <g>\n            <path :style=\"{fill: color}\" d=\"M18.035,27.453c-5.748,0-8.342-4.18-8.449-4.357c-0.286-0.473-0.135-1.087,0.338-1.373\n              c0.471-0.286,1.084-0.136,1.372,0.335c0.094,0.151,2.161,3.396,6.74,3.396c4.713,0,7.518-3.462,7.545-3.497\n              c0.343-0.432,0.973-0.504,1.405-0.161c0.433,0.344,0.505,0.973,0.161,1.405C27.009,23.374,23.703,27.453,18.035,27.453z\"\n            />\n          </g>\n        </svg>\n      </button>\n      </div>\n</template>\n\n<script>\nimport EmojiPicker from './EmojiPicker.vue'\n\nexport default {\n  components: {\n    EmojiPicker\n  },\n  data () {\n    return {\n      isActive: false\n    }\n  },\n  props: {\n    onEmojiPicked: {\n      type: Function,\n      required: true\n    },\n    color: {\n      type: String,\n      required: true\n    }\n  },\n  methods: {\n    _openPicker (e) {\n      this.isActive = !this.isActive\n    },\n    _handlePickerBlur () {\n      this.isActive = false\n    }\n  }\n}\n</script>\n\n<style scoped>\n.sc-user-input--emoji-icon-wrapper {\n  background: none;\n  border: none;\n  padding: 0px;\n  margin: 0px;\n  outline: none;\n}\n\n.sc-user-input--emoji-icon-wrapper:focus {\n  outline: none;\n}\n\n.sc-user-input--emoji-icon {\n  height: 18px;\n  cursor: pointer;\n  align-self: center;\n}\n\n.sc-user-input--emoji-icon-wrapper:focus .sc-user-input--emoji-icon path,\n.sc-user-input--emoji-icon-wrapper:focus .sc-user-input--emoji-icon circle,\n.sc-user-input--emoji-icon.active path,\n.sc-user-input--emoji-icon.active circle,\n.sc-user-input--emoji-icon:hover path,\n.sc-user-input--emoji-icon:hover circle {\n  filter: contrast(15%);\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -14044,7 +14071,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-launcher[data-v-772ff1a8] {\n  width: 60px;\n  height: 60px;\n  background-position: center;\n  background-repeat: no-repeat;\n  position: fixed;\n  right: 25px;\n  bottom: 25px;\n  border-radius: 50%;\n  -webkit-box-shadow: none;\n          box-shadow: none;\n  -webkit-transition: -webkit-box-shadow 0.2s ease-in-out;\n  transition: -webkit-box-shadow 0.2s ease-in-out;\n  transition: box-shadow 0.2s ease-in-out;\n  transition: box-shadow 0.2s ease-in-out, -webkit-box-shadow 0.2s ease-in-out;\n  cursor: pointer;\n}\n.sc-launcher[data-v-772ff1a8]:before {\n  content: '';\n  position: relative;\n  display: block;\n  width: 60px;\n  height: 60px;  \n  border-radius: 50%;\n  -webkit-transition: -webkit-box-shadow 0.2s ease-in-out;\n  transition: -webkit-box-shadow 0.2s ease-in-out;\n  transition: box-shadow 0.2s ease-in-out;\n  transition: box-shadow 0.2s ease-in-out, -webkit-box-shadow 0.2s ease-in-out;\n}\n.sc-launcher .sc-open-icon[data-v-772ff1a8],\n.sc-launcher .sc-closed-icon[data-v-772ff1a8] {\n  width: 60px;\n  height: 60px;\n  position: fixed;\n  right: 25px;\n  bottom: 25px;\n  -webkit-transition: opacity 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n}\n.sc-launcher .sc-closed-icon[data-v-772ff1a8] {\n  -webkit-transition: opacity 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n  width: 60px;\n  height: 60px;\n}\n.sc-launcher .sc-open-icon[data-v-772ff1a8] {\n  padding: 20px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  opacity: 0;\n}\n.sc-launcher.opened .sc-open-icon[data-v-772ff1a8] {\n  -webkit-transform: rotate(-90deg);\n          transform: rotate(-90deg);\n  opacity: 1;\n}\n.sc-launcher.opened .sc-closed-icon[data-v-772ff1a8] {\n  -webkit-transform: rotate(-90deg);\n          transform: rotate(-90deg);\n  opacity: 0;\n}\n.sc-launcher.opened[data-v-772ff1a8]:before {\n  -webkit-box-shadow: 0px 0px 400px 250px rgba(148, 149, 150, 0.2);\n          box-shadow: 0px 0px 400px 250px rgba(148, 149, 150, 0.2);\n}\n.sc-launcher[data-v-772ff1a8]:hover {\n  -webkit-box-shadow: 0 0px 27px 1.5px rgba(0,0,0,0.2);\n          box-shadow: 0 0px 27px 1.5px rgba(0,0,0,0.2);\n}\n.sc-new-messsages-count[data-v-772ff1a8] {\n  position: absolute;\n  top: -3px;\n  left: 41px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  border-radius: 50%;\n\twidth: 22px;\n  height: 22px;\n  background: #ff4646;\n  color: white;\n  text-align: center;\n  margin: auto;\n  font-size: 12px;\n  font-weight: 500;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/Launcher.vue"],"names":[],"mappings":";AA2JA;EACA,YAAA;EACA,aAAA;EACA,4BAAA;EACA,6BAAA;EACA,gBAAA;EACA,YAAA;EACA,aAAA;EACA,mBAAA;EACA,yBAAA;UAAA,iBAAA;EACA,wDAAA;EAAA,gDAAA;EAAA,wCAAA;EAAA,6EAAA;EACA,gBAAA;CACA;AAEA;EACA,YAAA;EACA,mBAAA;EACA,eAAA;EACA,YAAA;EACA,aAAA;EACA,mBAAA;EACA,wDAAA;EAAA,gDAAA;EAAA,wCAAA;EAAA,6EAAA;CACA;AAEA;;EAEA,YAAA;EACA,aAAA;EACA,gBAAA;EACA,YAAA;EACA,aAAA;EACA,mFAAA;EAAA,2EAAA;EAAA,mEAAA;EAAA,wGAAA;CACA;AAEA;EACA,mFAAA;EAAA,2EAAA;EAAA,mEAAA;EAAA,wGAAA;EACA,YAAA;EACA,aAAA;CACA;AAEA;EACA,cAAA;EACA,+BAAA;UAAA,uBAAA;EACA,WAAA;CACA;AAEA;EACA,kCAAA;UAAA,0BAAA;EACA,WAAA;CACA;AAEA;EACA,kCAAA;UAAA,0BAAA;EACA,WAAA;CACA;AAEA;EACA,iEAAA;UAAA,yDAAA;CACA;AAEA;EACA,qDAAA;UAAA,6CAAA;CACA;AAEA;EACA,mBAAA;EACA,UAAA;EACA,WAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;EACA,yBAAA;MAAA,sBAAA;UAAA,wBAAA;EACA,6BAAA;EAAA,8BAAA;MAAA,2BAAA;UAAA,uBAAA;EACA,mBAAA;CACA,YAAA;EACA,aAAA;EACA,oBAAA;EACA,aAAA;EACA,mBAAA;EACA,aAAA;EACA,gBAAA;EACA,iBAAA;CACA","file":"Launcher.vue","sourcesContent":["<template>\n  <div>\n    <div class=\"sc-launcher\" :class=\"{opened: isOpen}\" @click.prevent=\"isOpen ? close() : open()\" :style=\"{backgroundColor: colors.launcher.bg}\">\n      <div v-if=\"newMessagesCount > 0 && !isOpen\" class=\"sc-new-messsages-count\">\n        {{newMessagesCount}}\n      </div>\n      <img class=\"sc-open-icon\" src=\"./assets/close-icon.png\" />\n      <img class=\"sc-closed-icon\" src=\"./assets/logo-no-bg.svg\" />\n    </div>\n    <ChatWindow\n      :messageList=\"messageList\"\n      :onUserInputSubmit=\"onMessageWasSent\"\n      :participants=\"participants\"\n      :title=\"chatWindowTitle\"\n      :titleImageUrl=\"titleImageUrl\"\n      :isOpen=\"isOpen\"\n      :onClose=\"close\"\n      :showEmoji=\"showEmoji\"\n      :showFile=\"showFile\"\n      :placeholder=\"placeholder\"\n      :showTypingIndicator=\"showTypingIndicator\"\n      :colors=\"colors\"\n      :alwaysScrollToBottom=\"alwaysScrollToBottom\"\n      :messageStyling=\"messageStyling\"\n    />\n  </div>\n</template>\n<script>\nimport ChatWindow from './ChatWindow.vue'\n\nexport default {\n  props: {\n    showEmoji: {\n      type: Boolean,\n      default: false\n    },\n    isOpen: {\n      type: Boolean,\n      required: true\n    },\n    open: {\n      type: Function,\n      required: true\n    },\n    close: {\n      type: Function,\n      required: true\n    },\n    showFile: {\n      type: Boolean,\n      default: false\n    },\n    participants: {\n      type: Array,\n      required: true\n    },\n    title: {\n      type: String,\n      default: () => ''\n    },\n    titleImageUrl: {\n      type: String,\n      default: () => ''\n    },\n    onMessageWasSent: {\n      type: Function,\n      required: true\n    },\n    messageList: {\n      type: Array,\n      default: () => []\n    },\n    newMessagesCount: {\n      type: Number,\n      default: () => 0\n    },\n    placeholder: {\n      type: String,\n      default: 'Write a reply'\n    },\n    showTypingIndicator: {\n      type: String,\n      default: () => ''\n    },\n    colors: {\n      type: Object,\n      required: false,\n      validator: c => \n        'header' in c\n        && 'bg' in c.header && 'text' in c.header\n        && 'launcher' in c\n        && 'bg' in c.launcher\n        && 'messageList' in c\n        && 'bg' in c.messageList\n        && 'sentMessage' in c\n        && 'bg' in c.sentMessage && 'text' in c.sentMessage\n        && 'receivedMessage' in c\n        && 'bg' in c.receivedMessage && 'text' in c.receivedMessage\n        && 'userInput' in c\n        && 'bg' in c.userInput && 'text' in c.userInput,\n      default: function () {\n        return {\n          header: {\n            bg: '#4e8cff',\n            text: '#ffffff'\n          },\n          launcher: {\n            bg: '#4e8cff'\n          },\n          messageList: {\n            bg: '#ffffff'\n          },\n          sentMessage: {\n            bg: '#4e8cff',\n            text: '#ffffff'\n          },\n          receivedMessage: {\n            bg: '#f4f7f9',\n            text: '#ffffff'\n          },\n          userInput: {\n            bg: '#f4f7f9',\n            text: '#565867'\n          }\n        }\n      }\n    },\n    alwaysScrollToBottom: {\n      type: Boolean,\n      default: () => false\n    },\n    messageStyling: {\n      type: Boolean,\n      default: () => false\n    }\n  },\n  computed: {\n    chatWindowTitle() {\n      if (this.title !== '') {\n        return this.title\n      }\n\n      if (this.participants.length > 1) {\n        return 'You, ' + this.participants[0].name + ' & others'\n      } else {\n        return 'You & ' + this.participants[0].name\n      }\n    }\n  },\n  components: {\n    ChatWindow\n  }\n}\n</script>\n<style scoped>\n.sc-launcher {\n  width: 60px;\n  height: 60px;\n  background-position: center;\n  background-repeat: no-repeat;\n  position: fixed;\n  right: 25px;\n  bottom: 25px;\n  border-radius: 50%;\n  box-shadow: none;\n  transition: box-shadow 0.2s ease-in-out;\n  cursor: pointer;\n}\n\n.sc-launcher:before {\n  content: '';\n  position: relative;\n  display: block;\n  width: 60px;\n  height: 60px;  \n  border-radius: 50%;\n  transition: box-shadow 0.2s ease-in-out;\n}\n\n.sc-launcher .sc-open-icon,\n.sc-launcher .sc-closed-icon {\n  width: 60px;\n  height: 60px;\n  position: fixed;\n  right: 25px;\n  bottom: 25px;\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out;\n}\n\n.sc-launcher .sc-closed-icon {\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out;\n  width: 60px;\n  height: 60px;\n}\n\n.sc-launcher .sc-open-icon {\n  padding: 20px;\n  box-sizing: border-box;\n  opacity: 0;\n}\n\n.sc-launcher.opened .sc-open-icon {\n  transform: rotate(-90deg);\n  opacity: 1;\n}\n\n.sc-launcher.opened .sc-closed-icon {\n  transform: rotate(-90deg);\n  opacity: 0;\n}\n\n.sc-launcher.opened:before {\n  box-shadow: 0px 0px 400px 250px rgba(148, 149, 150, 0.2);\n}\n\n.sc-launcher:hover {\n  box-shadow: 0 0px 27px 1.5px rgba(0,0,0,0.2);\n}\n\n.sc-new-messsages-count {\n  position: absolute;\n  top: -3px;\n  left: 41px;\n  display: flex;\n  justify-content: center;\n  flex-direction: column;\n  border-radius: 50%;\n\twidth: 22px;\n  height: 22px;\n  background: #ff4646;\n  color: white;\n  text-align: center;\n  margin: auto;\n  font-size: 12px;\n  font-weight: 500;\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-launcher[data-v-772ff1a8] {\n  width: 60px;\n  height: 60px;\n  background-position: center;\n  background-repeat: no-repeat;\n  position: fixed;\n  right: 25px;\n  bottom: 25px;\n  border-radius: 50%;\n  -webkit-box-shadow: none;\n          box-shadow: none;\n  -webkit-transition: -webkit-box-shadow 0.2s ease-in-out;\n  transition: -webkit-box-shadow 0.2s ease-in-out;\n  transition: box-shadow 0.2s ease-in-out;\n  transition: box-shadow 0.2s ease-in-out, -webkit-box-shadow 0.2s ease-in-out;\n  cursor: pointer;\n}\n.sc-launcher[data-v-772ff1a8]:before {\n  content: '';\n  position: relative;\n  display: block;\n  width: 60px;\n  height: 60px;  \n  border-radius: 50%;\n  -webkit-transition: -webkit-box-shadow 0.2s ease-in-out;\n  transition: -webkit-box-shadow 0.2s ease-in-out;\n  transition: box-shadow 0.2s ease-in-out;\n  transition: box-shadow 0.2s ease-in-out, -webkit-box-shadow 0.2s ease-in-out;\n}\n.sc-launcher .sc-open-icon[data-v-772ff1a8],\n.sc-launcher .sc-closed-icon[data-v-772ff1a8] {\n  width: 60px;\n  height: 60px;\n  position: fixed;\n  right: 25px;\n  bottom: 25px;\n  -webkit-transition: opacity 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n}\n.sc-launcher .sc-closed-icon[data-v-772ff1a8] {\n  -webkit-transition: opacity 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out;\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out, -webkit-transform 100ms ease-in-out;\n  width: 60px;\n  height: 60px;\n}\n.sc-launcher .sc-open-icon[data-v-772ff1a8] {\n  padding: 20px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  opacity: 0;\n}\n.sc-launcher.opened .sc-open-icon[data-v-772ff1a8] {\n  -webkit-transform: rotate(-90deg);\n          transform: rotate(-90deg);\n  opacity: 1;\n}\n.sc-launcher.opened .sc-closed-icon[data-v-772ff1a8] {\n  -webkit-transform: rotate(-90deg);\n          transform: rotate(-90deg);\n  opacity: 0;\n}\n.sc-launcher.opened[data-v-772ff1a8]:before {\n  -webkit-box-shadow: 0px 0px 400px 250px rgba(148, 149, 150, 0.2);\n          box-shadow: 0px 0px 400px 250px rgba(148, 149, 150, 0.2);\n}\n.sc-launcher[data-v-772ff1a8]:hover {\n  -webkit-box-shadow: 0 0px 27px 1.5px rgba(0,0,0,0.2);\n          box-shadow: 0 0px 27px 1.5px rgba(0,0,0,0.2);\n}\n.sc-new-messsages-count[data-v-772ff1a8] {\n  position: absolute;\n  top: -3px;\n  left: 41px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  border-radius: 50%;\n\twidth: 22px;\n  height: 22px;\n  background: #ff4646;\n  color: white;\n  text-align: center;\n  margin: auto;\n  font-size: 12px;\n  font-weight: 500;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/Launcher.vue"],"names":[],"mappings":";AA2JA;EACA,YAAA;EACA,aAAA;EACA,4BAAA;EACA,6BAAA;EACA,gBAAA;EACA,YAAA;EACA,aAAA;EACA,mBAAA;EACA,yBAAA;UAAA,iBAAA;EACA,wDAAA;EAAA,gDAAA;EAAA,wCAAA;EAAA,6EAAA;EACA,gBAAA;CACA;AAEA;EACA,YAAA;EACA,mBAAA;EACA,eAAA;EACA,YAAA;EACA,aAAA;EACA,mBAAA;EACA,wDAAA;EAAA,gDAAA;EAAA,wCAAA;EAAA,6EAAA;CACA;AAEA;;EAEA,YAAA;EACA,aAAA;EACA,gBAAA;EACA,YAAA;EACA,aAAA;EACA,mFAAA;EAAA,2EAAA;EAAA,mEAAA;EAAA,wGAAA;CACA;AAEA;EACA,mFAAA;EAAA,2EAAA;EAAA,mEAAA;EAAA,wGAAA;EACA,YAAA;EACA,aAAA;CACA;AAEA;EACA,cAAA;EACA,+BAAA;UAAA,uBAAA;EACA,WAAA;CACA;AAEA;EACA,kCAAA;UAAA,0BAAA;EACA,WAAA;CACA;AAEA;EACA,kCAAA;UAAA,0BAAA;EACA,WAAA;CACA;AAEA;EACA,iEAAA;UAAA,yDAAA;CACA;AAEA;EACA,qDAAA;UAAA,6CAAA;CACA;AAEA;EACA,mBAAA;EACA,UAAA;EACA,WAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;EACA,yBAAA;MAAA,sBAAA;UAAA,wBAAA;EACA,6BAAA;EAAA,8BAAA;MAAA,2BAAA;UAAA,uBAAA;EACA,mBAAA;CACA,YAAA;EACA,aAAA;EACA,oBAAA;EACA,aAAA;EACA,mBAAA;EACA,aAAA;EACA,gBAAA;EACA,iBAAA;CACA","file":"Launcher.vue","sourcesContent":["<template>\n  <div>\n    <div class=\"sc-launcher\" :class=\"{opened: isOpen}\" @click.prevent=\"isOpen ? close() : open()\" :style=\"{backgroundColor: colors.launcher.bg}\">\n      <div v-if=\"newMessagesCount > 0 && !isOpen\" class=\"sc-new-messsages-count\">\n        {{newMessagesCount}}\n      </div>\n      <img class=\"sc-open-icon\" src=\"./assets/close-icon.png\" />\n      <img class=\"sc-closed-icon\" src=\"./assets/logo-no-bg.svg\" />\n    </div>\n    <ChatWindow\n      :messageList=\"messageList\"\n      :onUserInputSubmit=\"onMessageWasSent\"\n      :participants=\"participants\"\n      :title=\"chatWindowTitle\"\n      :titleImageUrl=\"titleImageUrl\"\n      :isOpen=\"isOpen\"\n      :onClose=\"close\"\n      :showEmoji=\"showEmoji\"\n      :showFile=\"showFile\"\n      :placeholder=\"placeholder\"\n      :showTypingIndicator=\"showTypingIndicator\"\n      :colors=\"colors\"\n      :alwaysScrollToBottom=\"alwaysScrollToBottom\"\n      :messageStyling=\"messageStyling\"\n    />\n  </div>\n</template>\n<script>\nimport ChatWindow from './ChatWindow.vue'\n\nexport default {\n  props: {\n    showEmoji: {\n      type: Boolean,\n      default: false\n    },\n    isOpen: {\n      type: Boolean,\n      required: true\n    },\n    open: {\n      type: Function,\n      required: true\n    },\n    close: {\n      type: Function,\n      required: true\n    },\n    showFile: {\n      type: Boolean,\n      default: false\n    },\n    participants: {\n      type: Array,\n      required: true\n    },\n    title: {\n      type: String,\n      default: () => ''\n    },\n    titleImageUrl: {\n      type: String,\n      default: () => ''\n    },\n    onMessageWasSent: {\n      type: Function,\n      required: true\n    },\n    messageList: {\n      type: Array,\n      default: () => []\n    },\n    newMessagesCount: {\n      type: Number,\n      default: () => 0\n    },\n    placeholder: {\n      type: String,\n      default: 'Write a reply'\n    },\n    showTypingIndicator: {\n      type: String,\n      default: () => ''\n    },\n    colors: {\n      type: Object,\n      required: false,\n      validator: c => \n        'header' in c\n        && 'bg' in c.header && 'text' in c.header\n        && 'launcher' in c\n        && 'bg' in c.launcher\n        && 'messageList' in c\n        && 'bg' in c.messageList\n        && 'sentMessage' in c\n        && 'bg' in c.sentMessage && 'text' in c.sentMessage\n        && 'receivedMessage' in c\n        && 'bg' in c.receivedMessage && 'text' in c.receivedMessage\n        && 'userInput' in c\n        && 'bg' in c.userInput && 'text' in c.userInput,\n      default: function () {\n        return {\n          header: {\n            bg: '#4e8cff',\n            text: '#ffffff'\n          },\n          launcher: {\n            bg: '#4e8cff'\n          },\n          messageList: {\n            bg: '#ffffff'\n          },\n          sentMessage: {\n            bg: '#4e8cff',\n            text: '#ffffff'\n          },\n          receivedMessage: {\n            bg: '#f4f7f9',\n            text: '#ffffff'\n          },\n          userInput: {\n            bg: '#f4f7f9',\n            text: '#565867'\n          }\n        }\n      }\n    },\n    alwaysScrollToBottom: {\n      type: Boolean,\n      default: () => false\n    },\n    messageStyling: {\n      type: Boolean,\n      default: () => false\n    }\n  },\n  computed: {\n    chatWindowTitle() {\n      if (this.title !== '') {\n        return this.title\n      }\n\n      if (this.participants.length > 1) {\n        return 'You, ' + this.participants[0].name + ' & others'\n      } else {\n        return 'You & ' + this.participants[0].name\n      }\n    }\n  },\n  components: {\n    ChatWindow\n  }\n}\n</script>\n<style scoped>\n.sc-launcher {\n  width: 60px;\n  height: 60px;\n  background-position: center;\n  background-repeat: no-repeat;\n  position: fixed;\n  right: 25px;\n  bottom: 25px;\n  border-radius: 50%;\n  box-shadow: none;\n  transition: box-shadow 0.2s ease-in-out;\n  cursor: pointer;\n}\n\n.sc-launcher:before {\n  content: '';\n  position: relative;\n  display: block;\n  width: 60px;\n  height: 60px;  \n  border-radius: 50%;\n  transition: box-shadow 0.2s ease-in-out;\n}\n\n.sc-launcher .sc-open-icon,\n.sc-launcher .sc-closed-icon {\n  width: 60px;\n  height: 60px;\n  position: fixed;\n  right: 25px;\n  bottom: 25px;\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out;\n}\n\n.sc-launcher .sc-closed-icon {\n  transition: opacity 100ms ease-in-out, transform 100ms ease-in-out;\n  width: 60px;\n  height: 60px;\n}\n\n.sc-launcher .sc-open-icon {\n  padding: 20px;\n  box-sizing: border-box;\n  opacity: 0;\n}\n\n.sc-launcher.opened .sc-open-icon {\n  transform: rotate(-90deg);\n  opacity: 1;\n}\n\n.sc-launcher.opened .sc-closed-icon {\n  transform: rotate(-90deg);\n  opacity: 0;\n}\n\n.sc-launcher.opened:before {\n  box-shadow: 0px 0px 400px 250px rgba(148, 149, 150, 0.2);\n}\n\n.sc-launcher:hover {\n  box-shadow: 0 0px 27px 1.5px rgba(0,0,0,0.2);\n}\n\n.sc-new-messsages-count {\n  position: absolute;\n  top: -3px;\n  left: 41px;\n  display: flex;\n  justify-content: center;\n  flex-direction: column;\n  border-radius: 50%;\n\twidth: 22px;\n  height: 22px;\n  background: #ff4646;\n  color: white;\n  text-align: center;\n  margin: auto;\n  font-size: 12px;\n  font-weight: 500;\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -14059,7 +14086,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-message-list[data-v-7d484826] {\n  height: 80%;\n  overflow-y: auto;\n  background-size: 100%;\n  padding: 40px 0px;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/MessageList.vue"],"names":[],"mappings":";AA4EA;EACA,YAAA;EACA,iBAAA;EACA,sBAAA;EACA,kBAAA;CACA","file":"MessageList.vue","sourcesContent":["<template>\n  <div class=\"sc-message-list\" ref=\"scrollList\" :style=\"{backgroundColor: colors.messageList.bg}\">\n    <Message v-for=\"(message, idx) in messages\" :message=\"message\" :chatImageUrl=\"chatImageUrl(message.author)\" :authorName=\"authorName(message.author)\" :key=\"idx\" :colors=\"colors\" :messageStyling=\"messageStyling\" />\n    <Message v-show=\"showTypingIndicator !== ''\" :message=\"{author: showTypingIndicator, type: 'typing'}\" :chatImageUrl=\"chatImageUrl(showTypingIndicator)\" :colors=\"colors\" :messageStyling=\"messageStyling\" />\n  </div>\n</template>\n<script>\nimport Message from './Message.vue'\nimport chatIcon from './assets/chat-icon.svg'\n\nexport default {\n  components: {\n    Message\n  },\n  props: {\n    participants: {\n      type: Array,\n      required: true\n    },\n    messages: {\n      type: Array,\n      required: true\n    },\n    showTypingIndicator: {\n      type: String,\n      required: true\n    },\n    colors: {\n      type: Object,\n      required: true\n    },\n    alwaysScrollToBottom: {\n      type: Boolean,\n      required: true\n    },\n    messageStyling: {\n      type: Boolean,\n      required: true\n    }\n  },\n  methods: {\n    _scrollDown () {\n      this.$refs.scrollList.scrollTop = this.$refs.scrollList.scrollHeight\n    },\n    shouldScrollToBottom() {\n      return this.alwaysScrollToBottom || (this.$refs.scrollList.scrollTop > this.$refs.scrollList.scrollHeight - 600)\n    },\n    profile(author) {\n      const profile = this.participants.find(profile => profile.id === author)\n\n      // A profile may not be found for system messages or messages by 'me'\n      return profile || {imageUrl: '', name: ''}\n    },\n    chatImageUrl(author) {\n      return this.profile(author).imageUrl\n    },\n    authorName(author) {\n      return this.profile(author).name\n    }\n  },\n  computed: {\n    defaultChatIcon() {\n      return chatIcon\n    }\n  },\n  mounted () {\n    this._scrollDown()\n  },\n  updated () {\n    if (this.shouldScrollToBottom())\n      this.$nextTick(this._scrollDown())\n  }\n}\n</script>\n\n<style scoped>\n.sc-message-list {\n  height: 80%;\n  overflow-y: auto;\n  background-size: 100%;\n  padding: 40px 0px;\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-message-list[data-v-7d484826] {\n  height: 80%;\n  overflow-y: auto;\n  background-size: 100%;\n  padding: 40px 0px;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/MessageList.vue"],"names":[],"mappings":";AA4EA;EACA,YAAA;EACA,iBAAA;EACA,sBAAA;EACA,kBAAA;CACA","file":"MessageList.vue","sourcesContent":["<template>\n  <div class=\"sc-message-list\" ref=\"scrollList\" :style=\"{backgroundColor: colors.messageList.bg}\">\n    <Message v-for=\"(message, idx) in messages\" :message=\"message\" :chatImageUrl=\"chatImageUrl(message.author)\" :authorName=\"authorName(message.author)\" :key=\"idx\" :colors=\"colors\" :messageStyling=\"messageStyling\" />\n    <Message v-show=\"showTypingIndicator !== ''\" :message=\"{author: showTypingIndicator, type: 'typing'}\" :chatImageUrl=\"chatImageUrl(showTypingIndicator)\" :colors=\"colors\" :messageStyling=\"messageStyling\" />\n  </div>\n</template>\n<script>\nimport Message from './Message.vue'\nimport chatIcon from './assets/chat-icon.svg'\n\nexport default {\n  components: {\n    Message\n  },\n  props: {\n    participants: {\n      type: Array,\n      required: true\n    },\n    messages: {\n      type: Array,\n      required: true\n    },\n    showTypingIndicator: {\n      type: String,\n      required: true\n    },\n    colors: {\n      type: Object,\n      required: true\n    },\n    alwaysScrollToBottom: {\n      type: Boolean,\n      required: true\n    },\n    messageStyling: {\n      type: Boolean,\n      required: true\n    }\n  },\n  methods: {\n    _scrollDown () {\n      this.$refs.scrollList.scrollTop = this.$refs.scrollList.scrollHeight\n    },\n    shouldScrollToBottom() {\n      return this.alwaysScrollToBottom || (this.$refs.scrollList.scrollTop > this.$refs.scrollList.scrollHeight - 600)\n    },\n    profile(author) {\n      const profile = this.participants.find(profile => profile.id === author)\n\n      // A profile may not be found for system messages or messages by 'me'\n      return profile || {imageUrl: '', name: ''}\n    },\n    chatImageUrl(author) {\n      return this.profile(author).imageUrl\n    },\n    authorName(author) {\n      return this.profile(author).name\n    }\n  },\n  computed: {\n    defaultChatIcon() {\n      return chatIcon\n    }\n  },\n  mounted () {\n    this._scrollDown()\n  },\n  updated () {\n    if (this.shouldScrollToBottom())\n      this.$nextTick(this._scrollDown())\n  }\n}\n</script>\n\n<style scoped>\n.sc-message-list {\n  height: 80%;\n  overflow-y: auto;\n  background-size: 100%;\n  padding: 40px 0px;\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -14074,7 +14101,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-header[data-v-969cbbd6] {\n  min-height: 75px;\n  border-top-left-radius: 9px;\n  border-top-right-radius: 9px;\n  padding: 10px;\n  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.2);\n          box-shadow: 0 1px 4px rgba(0,0,0,.2);\n  position: relative;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.sc-header--img[data-v-969cbbd6] {\n  border-radius: 50%;\n  -ms-flex-item-align: center;\n      align-self: center;\n  padding: 10px;\n}\n.sc-header--title[data-v-969cbbd6] {\n  -ms-flex-item-align: center;\n      align-self: center;\n  padding: 10px;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  cursor: pointer;\n  border-radius: 5px;\n}\n.sc-header--title[data-v-969cbbd6]:hover {\n  -webkit-box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n          box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n}\n.sc-header--close-button[data-v-969cbbd6] {\n  width: 40px;\n  -ms-flex-item-align: center;\n      align-self: center;\n  height: 40px;\n  margin-right: 10px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  cursor: pointer;\n  border-radius: 5px;\n}\n.sc-header--close-button[data-v-969cbbd6]:hover {\n  -webkit-box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n          box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n}\n.sc-header--close-button img[data-v-969cbbd6] {\n  width: 100%;\n  height: 100%;\n  padding: 13px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n@media (max-width: 450px) {\n.sc-header[data-v-969cbbd6] {\n    border-radius: 0px;\n}\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/Header.vue"],"names":[],"mappings":";AA2CA;EACA,iBAAA;EACA,4BAAA;EACA,6BAAA;EACA,cAAA;EACA,6CAAA;UAAA,qCAAA;EACA,mBAAA;EACA,+BAAA;UAAA,uBAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;CACA;AAEA;EACA,mBAAA;EACA,4BAAA;MAAA,mBAAA;EACA,cAAA;CACA;AAEA;EACA,4BAAA;MAAA,mBAAA;EACA,cAAA;EACA,oBAAA;MAAA,YAAA;UAAA,QAAA;EACA,0BAAA;KAAA,uBAAA;MAAA,sBAAA;UAAA,kBAAA;EACA,gBAAA;EACA,mBAAA;CACA;AAEA;EACA,wDAAA;UAAA,gDAAA;CACA;AAEA;EACA,YAAA;EACA,4BAAA;MAAA,mBAAA;EACA,aAAA;EACA,mBAAA;EACA,+BAAA;UAAA,uBAAA;EACA,gBAAA;EACA,mBAAA;CACA;AAEA;EACA,wDAAA;UAAA,gDAAA;CACA;AAEA;EACA,YAAA;EACA,aAAA;EACA,cAAA;EACA,+BAAA;UAAA,uBAAA;CACA;AAEA;AACA;IACA,mBAAA;CACA;CACA","file":"Header.vue","sourcesContent":["<template>\n  <div class=\"sc-header\" :style=\"{background: colors.header.bg, color: colors.header.text}\">\n    <img class=\"sc-header--img\" :src=\"imageUrl\" alt=\"\" v-if=\"imageUrl\" />\n    <div class=\"sc-header--title\" @click=\"toggleUserList\"> {{title}} </div>\n    <div class=\"sc-header--close-button\" @click=\"onClose\">\n      <img src=\"./assets/close-icon.png\" alt=\"\" />\n    </div>\n  </div>\n</template>\n<script>\n\nexport default {\n  props: {\n    imageUrl: {\n      type: String,\n      required: true\n    },\n    title: {\n      type: String\n    },\n    onClose: {\n      type: Function,\n      required: true\n    },\n    colors: {\n      type: Object,\n      required: true\n    }\n  },\n  methods: {\n    toggleUserList() {\n      this.inUserList = !this.inUserList\n      this.$emit(\"userList\", this.inUserList)\n    }\n  },\n  data() {\n    return {\n      inUserList: false\n    }\n  }\n}\n</script>\n<style scoped>\n.sc-header {\n  min-height: 75px;\n  border-top-left-radius: 9px;\n  border-top-right-radius: 9px;\n  padding: 10px;\n  box-shadow: 0 1px 4px rgba(0,0,0,.2);\n  position: relative;\n  box-sizing: border-box;\n  display: flex;\n}\n\n.sc-header--img {\n  border-radius: 50%;\n  align-self: center;\n  padding: 10px;\n}\n\n.sc-header--title {\n  align-self: center;\n  padding: 10px;\n  flex: 1;\n  user-select: none;\n  cursor: pointer;\n  border-radius: 5px;\n}\n\n.sc-header--title:hover {\n  box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n}\n\n.sc-header--close-button {\n  width: 40px;\n  align-self: center;\n  height: 40px;\n  margin-right: 10px;\n  box-sizing: border-box;\n  cursor: pointer;\n  border-radius: 5px;\n}\n\n.sc-header--close-button:hover {\n  box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n}\n\n.sc-header--close-button img {\n  width: 100%;\n  height: 100%;\n  padding: 13px;\n  box-sizing: border-box;\n}\n\n@media (max-width: 450px) {\n  .sc-header {\n    border-radius: 0px;\n  }\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-header[data-v-969cbbd6] {\n  min-height: 75px;\n  border-top-left-radius: 9px;\n  border-top-right-radius: 9px;\n  padding: 10px;\n  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.2);\n          box-shadow: 0 1px 4px rgba(0,0,0,.2);\n  position: relative;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.sc-header--img[data-v-969cbbd6] {\n  border-radius: 50%;\n  -ms-flex-item-align: center;\n      align-self: center;\n  padding: 10px;\n}\n.sc-header--title[data-v-969cbbd6] {\n  -ms-flex-item-align: center;\n      align-self: center;\n  padding: 10px;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  cursor: pointer;\n  border-radius: 5px;\n}\n.sc-header--title[data-v-969cbbd6]:hover {\n  -webkit-box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n          box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n}\n.sc-header--close-button[data-v-969cbbd6] {\n  width: 40px;\n  -ms-flex-item-align: center;\n      align-self: center;\n  height: 40px;\n  margin-right: 10px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  cursor: pointer;\n  border-radius: 5px;\n}\n.sc-header--close-button[data-v-969cbbd6]:hover {\n  -webkit-box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n          box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n}\n.sc-header--close-button img[data-v-969cbbd6] {\n  width: 100%;\n  height: 100%;\n  padding: 13px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n@media (max-width: 450px) {\n.sc-header[data-v-969cbbd6] {\n    border-radius: 0px;\n}\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/Header.vue"],"names":[],"mappings":";AA2CA;EACA,iBAAA;EACA,4BAAA;EACA,6BAAA;EACA,cAAA;EACA,6CAAA;UAAA,qCAAA;EACA,mBAAA;EACA,+BAAA;UAAA,uBAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;CACA;AAEA;EACA,mBAAA;EACA,4BAAA;MAAA,mBAAA;EACA,cAAA;CACA;AAEA;EACA,4BAAA;MAAA,mBAAA;EACA,cAAA;EACA,oBAAA;MAAA,YAAA;UAAA,QAAA;EACA,0BAAA;KAAA,uBAAA;MAAA,sBAAA;UAAA,kBAAA;EACA,gBAAA;EACA,mBAAA;CACA;AAEA;EACA,wDAAA;UAAA,gDAAA;CACA;AAEA;EACA,YAAA;EACA,4BAAA;MAAA,mBAAA;EACA,aAAA;EACA,mBAAA;EACA,+BAAA;UAAA,uBAAA;EACA,gBAAA;EACA,mBAAA;CACA;AAEA;EACA,wDAAA;UAAA,gDAAA;CACA;AAEA;EACA,YAAA;EACA,aAAA;EACA,cAAA;EACA,+BAAA;UAAA,uBAAA;CACA;AAEA;AACA;IACA,mBAAA;CACA;CACA","file":"Header.vue","sourcesContent":["<template>\n  <div class=\"sc-header\" :style=\"{background: colors.header.bg, color: colors.header.text}\">\n    <img class=\"sc-header--img\" :src=\"imageUrl\" alt=\"\" v-if=\"imageUrl\" />\n    <div class=\"sc-header--title\" @click=\"toggleUserList\"> {{title}} </div>\n    <div class=\"sc-header--close-button\" @click=\"onClose\">\n      <img src=\"./assets/close-icon.png\" alt=\"\" />\n    </div>\n  </div>\n</template>\n<script>\n\nexport default {\n  props: {\n    imageUrl: {\n      type: String,\n      required: true\n    },\n    title: {\n      type: String\n    },\n    onClose: {\n      type: Function,\n      required: true\n    },\n    colors: {\n      type: Object,\n      required: true\n    }\n  },\n  methods: {\n    toggleUserList() {\n      this.inUserList = !this.inUserList\n      this.$emit(\"userList\", this.inUserList)\n    }\n  },\n  data() {\n    return {\n      inUserList: false\n    }\n  }\n}\n</script>\n<style scoped>\n.sc-header {\n  min-height: 75px;\n  border-top-left-radius: 9px;\n  border-top-right-radius: 9px;\n  padding: 10px;\n  box-shadow: 0 1px 4px rgba(0,0,0,.2);\n  position: relative;\n  box-sizing: border-box;\n  display: flex;\n}\n\n.sc-header--img {\n  border-radius: 50%;\n  align-self: center;\n  padding: 10px;\n}\n\n.sc-header--title {\n  align-self: center;\n  padding: 10px;\n  flex: 1;\n  user-select: none;\n  cursor: pointer;\n  border-radius: 5px;\n}\n\n.sc-header--title:hover {\n  box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n}\n\n.sc-header--close-button {\n  width: 40px;\n  align-self: center;\n  height: 40px;\n  margin-right: 10px;\n  box-sizing: border-box;\n  cursor: pointer;\n  border-radius: 5px;\n}\n\n.sc-header--close-button:hover {\n  box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, .1);\n}\n\n.sc-header--close-button img {\n  width: 100%;\n  height: 100%;\n  padding: 13px;\n  box-sizing: border-box;\n}\n\n@media (max-width: 450px) {\n  .sc-header {\n    border-radius: 0px;\n  }\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -14089,7 +14116,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-emoji-picker[data-v-a26ce8c8] {\n  position: absolute;\n  bottom: 50px;\n  right: 0px;\n  width: 330px;\n  max-height: 215px;\n  -webkit-box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.3);\n          box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.3);\n  background: white;\n  border-radius: 10px;\n  outline: none;\n}\n.sc-emoji-picker[data-v-a26ce8c8]:after {\n  content: \"\";\n  width: 14px;\n  height: 14px;\n  background: white;\n  position: absolute;\n  bottom: -6px;\n  right: 55px;\n  -webkit-transform: rotate(45deg);\n          transform: rotate(45deg);\n  border-radius: 2px;\n}\n.sc-emoji-picker--content[data-v-a26ce8c8] {\n  padding: 10px;\n  overflow: auto;\n  width: 100%;\n  max-height: 195px;\n  margin-top: 7px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.sc-emoji-picker--category[data-v-a26ce8c8] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: row;\n          flex-direction: row;\n  -ms-flex-wrap: wrap;\n      flex-wrap: wrap;\n}\n.sc-emoji-picker--category-title[data-v-a26ce8c8] {\n  min-width: 100%;\n  color: #b8c3ca;\n  font-weight: 200;\n  font-size: 13px;\n  margin: 5px;\n  letter-spacing: 1px;\n}\n.sc-emoji-picker--emoji[data-v-a26ce8c8] {\n  margin: 5px;\n  width: 30px;\n  line-height: 30px;\n  text-align: center;\n  cursor: pointer;\n  vertical-align: middle;\n  font-size: 28px;\n  transition: transform 60ms ease-out,-webkit-transform 60ms ease-out;\n}\n.sc-emoji-picker--emoji[data-v-a26ce8c8]:hover {\n  -webkit-transform: scale(1.4);\n          transform: scale(1.4);\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/EmojiPicker.vue"],"names":[],"mappings":";AAgEA;EACA,mBAAA;EACA,aAAA;EACA,WAAA;EACA,aAAA;EACA,kBAAA;EACA,8DAAA;UAAA,sDAAA;EACA,kBAAA;EACA,oBAAA;EACA,cAAA;CACA;AAEA;EACA,YAAA;EACA,YAAA;EACA,aAAA;EACA,kBAAA;EACA,mBAAA;EACA,aAAA;EACA,YAAA;EACA,iCAAA;UAAA,yBAAA;EACA,mBAAA;CACA;AAEA;EACA,cAAA;EACA,eAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,+BAAA;UAAA,uBAAA;CACA;AAEA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;EACA,+BAAA;EAAA,8BAAA;MAAA,wBAAA;UAAA,oBAAA;EACA,oBAAA;MAAA,gBAAA;CACA;AAEA;EACA,gBAAA;EACA,eAAA;EACA,iBAAA;EACA,gBAAA;EACA,YAAA;EACA,oBAAA;CACA;AAEA;EACA,YAAA;EACA,YAAA;EACA,kBAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;EACA,gBAAA;EACA,oEAAA;CACA;AAEA;EACA,8BAAA;UAAA,sBAAA;CACA","file":"EmojiPicker.vue","sourcesContent":["<template>\n  <div\n    tabIndex=\"0\"\n    @blur=\"onBlur\"\n    class=\"sc-emoji-picker\"\n    ref=\"domNode\"\n  >\n    <div class=\"sc-emoji-picker--content\">\n      <div v-for=\"category in emojiData\" class=\"sc-emoji-picker--category\" :key=\"category.name\">\n        <div class=\"sc-emoji-picker--category-title\">{{category.name}}</div>\n          <span\n            v-for=\"emoji in category.emojis\"\n            :key=\"emoji\"\n            class=\"sc-emoji-picker--emoji\"\n            @click=\"emojiClicked(emoji)\"\n          >\n            {{emoji}}\n          </span>\n      </div>\n    </div>\n  </div>\n</template>\n\n<script>\nimport EmojiConvertor from 'emoji-js'\nimport emojiData from './emojiData'\n\nexport default {\n  data () {\n    return {\n      emojiData,\n      emojiConvertor: new EmojiConvertor()\n    }\n  },\n  props: {\n    onBlur: {\n      type: Function,\n      required: true\n    },\n    onEmojiPicked: {\n      type: Function,\n      required: true\n    }\n  },\n  methods: {\n    emojiClicked (emoji) {\n      this.onEmojiPicked(emoji)\n      this.$refs.domNode.blur()\n    }\n  },\n  mounted () {\n    const elem = this.$refs.domNode\n    elem.style.opacity = 0\n    window.requestAnimationFrame(() => {\n      elem.style.transition = 'opacity 350ms'\n      elem.style.opacity = 1\n    })\n    this.$refs.domNode.focus()\n    this.emojiConvertor.init_env()\n  }\n}\n</script>\n\n<style scoped>\n.sc-emoji-picker {\n  position: absolute;\n  bottom: 50px;\n  right: 0px;\n  width: 330px;\n  max-height: 215px;\n  box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.3);\n  background: white;\n  border-radius: 10px;\n  outline: none;\n}\n\n.sc-emoji-picker:after {\n  content: \"\";\n  width: 14px;\n  height: 14px;\n  background: white;\n  position: absolute;\n  bottom: -6px;\n  right: 55px;\n  transform: rotate(45deg);\n  border-radius: 2px;\n}\n\n.sc-emoji-picker--content {\n  padding: 10px;\n  overflow: auto;\n  width: 100%;\n  max-height: 195px;\n  margin-top: 7px;\n  box-sizing: border-box;\n}\n\n.sc-emoji-picker--category {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n\n.sc-emoji-picker--category-title {\n  min-width: 100%;\n  color: #b8c3ca;\n  font-weight: 200;\n  font-size: 13px;\n  margin: 5px;\n  letter-spacing: 1px;\n}\n\n.sc-emoji-picker--emoji {\n  margin: 5px;\n  width: 30px;\n  line-height: 30px;\n  text-align: center;\n  cursor: pointer;\n  vertical-align: middle;\n  font-size: 28px;\n  transition: transform 60ms ease-out,-webkit-transform 60ms ease-out;\n}\n\n.sc-emoji-picker--emoji:hover {\n  transform: scale(1.4);\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-emoji-picker[data-v-a26ce8c8] {\n  position: absolute;\n  bottom: 50px;\n  right: 0px;\n  width: 330px;\n  max-height: 215px;\n  -webkit-box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.3);\n          box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.3);\n  background: white;\n  border-radius: 10px;\n  outline: none;\n}\n.sc-emoji-picker[data-v-a26ce8c8]:after {\n  content: \"\";\n  width: 14px;\n  height: 14px;\n  background: white;\n  position: absolute;\n  bottom: -6px;\n  right: 55px;\n  -webkit-transform: rotate(45deg);\n          transform: rotate(45deg);\n  border-radius: 2px;\n}\n.sc-emoji-picker--content[data-v-a26ce8c8] {\n  padding: 10px;\n  overflow: auto;\n  width: 100%;\n  max-height: 195px;\n  margin-top: 7px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.sc-emoji-picker--category[data-v-a26ce8c8] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: row;\n          flex-direction: row;\n  -ms-flex-wrap: wrap;\n      flex-wrap: wrap;\n}\n.sc-emoji-picker--category-title[data-v-a26ce8c8] {\n  min-width: 100%;\n  color: #b8c3ca;\n  font-weight: 200;\n  font-size: 13px;\n  margin: 5px;\n  letter-spacing: 1px;\n}\n.sc-emoji-picker--emoji[data-v-a26ce8c8] {\n  margin: 5px;\n  width: 30px;\n  line-height: 30px;\n  text-align: center;\n  cursor: pointer;\n  vertical-align: middle;\n  font-size: 28px;\n  transition: transform 60ms ease-out,-webkit-transform 60ms ease-out;\n}\n.sc-emoji-picker--emoji[data-v-a26ce8c8]:hover {\n  -webkit-transform: scale(1.4);\n          transform: scale(1.4);\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/EmojiPicker.vue"],"names":[],"mappings":";AAgEA;EACA,mBAAA;EACA,aAAA;EACA,WAAA;EACA,aAAA;EACA,kBAAA;EACA,8DAAA;UAAA,sDAAA;EACA,kBAAA;EACA,oBAAA;EACA,cAAA;CACA;AAEA;EACA,YAAA;EACA,YAAA;EACA,aAAA;EACA,kBAAA;EACA,mBAAA;EACA,aAAA;EACA,YAAA;EACA,iCAAA;UAAA,yBAAA;EACA,mBAAA;CACA;AAEA;EACA,cAAA;EACA,eAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,+BAAA;UAAA,uBAAA;CACA;AAEA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;EACA,+BAAA;EAAA,8BAAA;MAAA,wBAAA;UAAA,oBAAA;EACA,oBAAA;MAAA,gBAAA;CACA;AAEA;EACA,gBAAA;EACA,eAAA;EACA,iBAAA;EACA,gBAAA;EACA,YAAA;EACA,oBAAA;CACA;AAEA;EACA,YAAA;EACA,YAAA;EACA,kBAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;EACA,gBAAA;EACA,oEAAA;CACA;AAEA;EACA,8BAAA;UAAA,sBAAA;CACA","file":"EmojiPicker.vue","sourcesContent":["<template>\n  <div\n    tabIndex=\"0\"\n    @blur=\"onBlur\"\n    class=\"sc-emoji-picker\"\n    ref=\"domNode\"\n  >\n    <div class=\"sc-emoji-picker--content\">\n      <div v-for=\"category in emojiData\" class=\"sc-emoji-picker--category\" :key=\"category.name\">\n        <div class=\"sc-emoji-picker--category-title\">{{category.name}}</div>\n          <span\n            v-for=\"emoji in category.emojis\"\n            :key=\"emoji\"\n            class=\"sc-emoji-picker--emoji\"\n            @click=\"emojiClicked(emoji)\"\n          >\n            {{emoji}}\n          </span>\n      </div>\n    </div>\n  </div>\n</template>\n\n<script>\nimport EmojiConvertor from 'emoji-js'\nimport emojiData from './emojiData'\n\nexport default {\n  data () {\n    return {\n      emojiData,\n      emojiConvertor: new EmojiConvertor()\n    }\n  },\n  props: {\n    onBlur: {\n      type: Function,\n      required: true\n    },\n    onEmojiPicked: {\n      type: Function,\n      required: true\n    }\n  },\n  methods: {\n    emojiClicked (emoji) {\n      this.onEmojiPicked(emoji)\n      this.$refs.domNode.blur()\n    }\n  },\n  mounted () {\n    const elem = this.$refs.domNode\n    elem.style.opacity = 0\n    window.requestAnimationFrame(() => {\n      elem.style.transition = 'opacity 350ms'\n      elem.style.opacity = 1\n    })\n    this.$refs.domNode.focus()\n    this.emojiConvertor.init_env()\n  }\n}\n</script>\n\n<style scoped>\n.sc-emoji-picker {\n  position: absolute;\n  bottom: 50px;\n  right: 0px;\n  width: 330px;\n  max-height: 215px;\n  box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.3);\n  background: white;\n  border-radius: 10px;\n  outline: none;\n}\n\n.sc-emoji-picker:after {\n  content: \"\";\n  width: 14px;\n  height: 14px;\n  background: white;\n  position: absolute;\n  bottom: -6px;\n  right: 55px;\n  transform: rotate(45deg);\n  border-radius: 2px;\n}\n\n.sc-emoji-picker--content {\n  padding: 10px;\n  overflow: auto;\n  width: 100%;\n  max-height: 195px;\n  margin-top: 7px;\n  box-sizing: border-box;\n}\n\n.sc-emoji-picker--category {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n\n.sc-emoji-picker--category-title {\n  min-width: 100%;\n  color: #b8c3ca;\n  font-weight: 200;\n  font-size: 13px;\n  margin: 5px;\n  letter-spacing: 1px;\n}\n\n.sc-emoji-picker--emoji {\n  margin: 5px;\n  width: 30px;\n  line-height: 30px;\n  text-align: center;\n  cursor: pointer;\n  vertical-align: middle;\n  font-size: 28px;\n  transition: transform 60ms ease-out,-webkit-transform 60ms ease-out;\n}\n\n.sc-emoji-picker--emoji:hover {\n  transform: scale(1.4);\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -14104,7 +14131,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\na.chatLink[data-v-e28f937c] {\n  color: inherit !important;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/TextMessage.vue"],"names":[],"mappings":";AAyCA;EACA,0BAAA;CACA","file":"TextMessage.vue","sourcesContent":["<template>\n  <div class=\"sc-message--text\" :style=\"messageColors\">\n    <p v-html=\"messageText\"></p>\n    <p v-if=\"data.meta\" class='sc-message--meta' :style=\"{color: messageColors.color}\">{{data.meta}}</p>\n  </div>\n</template>\n\n<script>\nimport escapeGoat from 'escape-goat'\nimport Autolinker from 'autolinker'\nconst fmt = require('msgdown')\n\nexport default {\n  props: {\n    data: {\n      type: Object,\n      required: true\n    },\n    messageColors: {\n      type: Object,\n      required: true\n    },\n    messageStyling: {\n      type: Boolean,\n      required: true\n    }\n  },\n  computed: {\n    messageText() {\n      const escaped = escapeGoat.escape(this.data.text)\n\n      return Autolinker.link(this.messageStyling ? fmt(escaped) : escaped, {\n        className: 'chatLink',\n        truncate: { length: 50, location: 'smart' }\n      })\n    }\n  }\n}\n</script>\n\n<style scoped>\na.chatLink {\n  color: inherit !important;\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\na.chatLink[data-v-e28f937c] {\n  color: inherit !important;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/TextMessage.vue"],"names":[],"mappings":";AAyCA;EACA,0BAAA;CACA","file":"TextMessage.vue","sourcesContent":["<template>\n  <div class=\"sc-message--text\" :style=\"messageColors\">\n    <p v-html=\"messageText\"></p>\n    <p v-if=\"data.meta\" class='sc-message--meta' :style=\"{color: messageColors.color}\">{{data.meta}}</p>\n  </div>\n</template>\n\n<script>\nimport escapeGoat from 'escape-goat'\nimport Autolinker from 'autolinker'\nconst fmt = require('msgdown')\n\nexport default {\n  props: {\n    data: {\n      type: Object,\n      required: true\n    },\n    messageColors: {\n      type: Object,\n      required: true\n    },\n    messageStyling: {\n      type: Boolean,\n      required: true\n    }\n  },\n  computed: {\n    messageText() {\n      const escaped = escapeGoat.escape(this.data.text)\n\n      return Autolinker.link(this.messageStyling ? fmt(escaped) : escaped, {\n        className: 'chatLink',\n        truncate: { length: 50, location: 'smart' }\n      })\n    }\n  }\n}\n</script>\n\n<style scoped>\na.chatLink {\n  color: inherit !important;\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -14119,7 +14146,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-user-input {\n  min-height: 55px;\n  margin: 0px;\n  position: relative;\n  bottom: 0;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  background-color: #f4f7f9;\n  border-bottom-left-radius: 10px;\n  border-bottom-right-radius: 10px;\n  -webkit-transition: background-color 0.2s ease, -webkit-box-shadow 0.2s ease;\n  transition: background-color 0.2s ease, -webkit-box-shadow 0.2s ease;\n  transition: background-color 0.2s ease, box-shadow 0.2s ease;\n  transition: background-color 0.2s ease, box-shadow 0.2s ease, -webkit-box-shadow 0.2s ease;\n}\n.sc-user-input--text {\n  width: 300px;\n  resize: none;\n  border: none;\n  outline: none;\n  border-bottom-left-radius: 10px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  padding: 18px;\n  font-size: 15px;\n  font-weight: 400;\n  line-height: 1.33;\n  white-space: pre-wrap;\n  word-wrap: break-word;\n  color: #565867;\n  -webkit-font-smoothing: antialiased;\n  max-height: 200px;\n  overflow: scroll;\n  bottom: 0;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.sc-user-input--text:empty:before {\n  content: attr(placeholder);\n  display: block; /* For Firefox */\n  /* color: rgba(86, 88, 103, 0.3); */\n  -webkit-filter: contrast(15%);\n          filter: contrast(15%);\n  outline: none;\n}\n.sc-user-input--buttons {\n  width: 100px;\n  position: absolute;\n  right: 30px;\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.sc-user-input--button:first-of-type {\n  width: 40px;\n}\n.sc-user-input--button {\n  width: 30px;\n  height: 55px;\n  margin-left: 2px;\n  margin-right: 2px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n}\n.sc-user-input.active {\n  -webkit-box-shadow: none;\n          box-shadow: none;\n  background-color: white;\n  -webkit-box-shadow: 0px -5px 20px 0px rgba(150, 165, 190, 0.2);\n          box-shadow: 0px -5px 20px 0px rgba(150, 165, 190, 0.2);\n}\n.sc-user-input--button label {\n  position: relative;\n  height: 24px;\n  padding-left: 3px;\n  cursor: pointer;\n}\n.sc-user-input--button label:hover path {\n  fill: rgba(86, 88, 103, 1);\n}\n.sc-user-input--button input {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  z-index: 99999;\n  height: 100%;\n  opacity: 0;\n  cursor: pointer;\n  overflow: hidden;\n}\n.file-container {\n  background-color: #f4f7f9;\n  border-top-left-radius: 10px;\n  padding: 5px 20px;\n  color: #565867;\n}\n.delete-file-message {\n  font-style: normal;\n  float: right;\n  cursor: pointer;\n  color: #c8cad0;\n}\n.delete-file-message:hover {\n  color: #5d5e6d;\n}\n.icon-file-message {\n  margin-right: 5px;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/UserInput.vue"],"names":[],"mappings":";AAkJA;EACA,iBAAA;EACA,YAAA;EACA,mBAAA;EACA,UAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;EACA,0BAAA;EACA,gCAAA;EACA,iCAAA;EACA,6EAAA;EAAA,qEAAA;EAAA,6DAAA;EAAA,2FAAA;CACA;AAEA;EACA,aAAA;EACA,aAAA;EACA,aAAA;EACA,cAAA;EACA,gCAAA;EACA,+BAAA;UAAA,uBAAA;EACA,cAAA;EACA,gBAAA;EACA,iBAAA;EACA,kBAAA;EACA,sBAAA;EACA,sBAAA;EACA,eAAA;EACA,oCAAA;EACA,kBAAA;EACA,iBAAA;EACA,UAAA;EACA,mBAAA;EACA,iBAAA;CACA;AAEA;EACA,2BAAA;EACA,eAAA,CAAA,iBAAA;EACA,oCAAA;EACA,8BAAA;UAAA,sBAAA;EACA,cAAA;CACA;AAEA;EACA,aAAA;EACA,mBAAA;EACA,YAAA;EACA,aAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;CACA;AAEA;EACA,YAAA;CACA;AAEA;EACA,YAAA;EACA,aAAA;EACA,iBAAA;EACA,kBAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;EACA,6BAAA;EAAA,8BAAA;MAAA,2BAAA;UAAA,uBAAA;EACA,yBAAA;MAAA,sBAAA;UAAA,wBAAA;CACA;AAEA;EACA,yBAAA;UAAA,iBAAA;EACA,wBAAA;EACA,+DAAA;UAAA,uDAAA;CACA;AAEA;EACA,mBAAA;EACA,aAAA;EACA,kBAAA;EACA,gBAAA;CACA;AAEA;EACA,2BAAA;CACA;AAEA;EACA,mBAAA;EACA,QAAA;EACA,OAAA;EACA,YAAA;EACA,eAAA;EACA,aAAA;EACA,WAAA;EACA,gBAAA;EACA,iBAAA;CACA;AAEA;EACA,0BAAA;EACA,6BAAA;EACA,kBAAA;EACA,eAAA;CACA;AAEA;EACA,mBAAA;EACA,aAAA;EACA,gBAAA;EACA,eAAA;CACA;AAEA;EACA,eAAA;CACA;AAEA;EACA,kBAAA;CACA","file":"UserInput.vue","sourcesContent":["<template>\n  <div>\n    <Suggestions :suggestions=\"suggestions\" v-on:sendSuggestion=\"_submitSuggestion\" :colors=\"colors\"/>\n    <div v-if=\"file\" class='file-container' :style=\"{backgroundColor: colors.userInput.text, color: colors.userInput.bg}\">\n      <span class='icon-file-message'><img src=\"./assets/file.svg\" alt='genericFileIcon' height=\"15\" /></span>\n      {{file.name}}\n      <span class='delete-file-message' @click=\"cancelFile()\" ><img src=\"./assets/close.svg\" alt='close icon' height=\"10\" title='Remove the file' /></span>\n    </div>\n    <form class=\"sc-user-input\" :class=\"{active: inputActive}\" :style=\"{background: colors.userInput.bg}\">\n      <div\n        role=\"button\"\n        tabIndex=\"0\"\n        @focus=\"setInputActive(true)\"\n        @blur=\"setInputActive(false)\"\n        @keydown=\"handleKey\"\n        contentEditable=\"true\"\n        :placeholder=\"placeholder\"\n        class=\"sc-user-input--text\"\n        ref=\"userInput\"\n        :style=\"{color: colors.userInput.text}\"\n      >\n      </div>\n      <div class=\"sc-user-input--buttons\">\n        <div class=\"sc-user-input--button\"></div>\n        <div v-if=\"showEmoji\" class=\"sc-user-input--button\">\n          <EmojiIcon :onEmojiPicked=\"_handleEmojiPicked\" :color=\"colors.userInput.text\" />\n        </div>\n        <div v-if=\"showFile\" class=\"sc-user-input--button\">\n          <FileIcons :onChange=\"_handleFileSubmit\" :color=\"colors.userInput.text\" />\n        </div>\n        <div class=\"sc-user-input--button\">\n          <SendIcon :onClick=\"_submitText\" :color=\"colors.userInput.text\" />\n        </div>\n      </div>\n    </form>\n  </div>\n</template>\n\n\n<script>\nimport EmojiIcon from './EmojiIcon.vue'\nimport FileIcons from './FileIcons.vue'\nimport SendIcon from './SendIcon.vue'\nimport Suggestions from './Suggestions.vue'\n\nexport default {\n  components: {\n    EmojiIcon,\n    FileIcons,\n    SendIcon,\n    Suggestions\n  },\n  props: {\n    showEmoji: {\n      type: Boolean,\n      default: () => false\n    },\n    suggestions: {\n      type: Array,\n      default: () => []\n    },\n    showFile: {\n      type: Boolean,\n      default: () => false\n    },\n    onSubmit: {\n      type: Function,\n      required: true\n    },\n    placeholder: {\n      type: String,\n      default: 'Write a reply'\n    },\n    colors: {\n      type: Object,\n      required: true\n    }\n  },\n  data () {\n    return {\n      file: null,\n      inputActive: false\n    }\n  },\n  methods: {\n    cancelFile () {\n      this.file = null\n    },\n    setInputActive (onoff) {\n      this.inputActive = onoff\n    },\n    handleKey (event) {\n      if (event.keyCode === 13 && !event.shiftKey) {\n        this._submitText(event)\n        event.preventDefault()\n      }\n    },\n    _submitSuggestion(suggestion) {\n      this.onSubmit({author: 'me', type: 'text', data: { text: suggestion }})\n    },\n    _submitText (event) {\n      const text = this.$refs.userInput.textContent\n      const file = this.file\n      if (file) {\n        if (text && text.length > 0) {\n          this.onSubmit({\n            author: 'me',\n            type: 'file',\n            data: { text, file }\n          })\n          this.file = null\n          this.$refs.userInput.innerHTML = ''\n        } else {\n          this.onSubmit({\n            author: 'me',\n            type: 'file',\n            data: { file }\n          })\n          this.file = null\n        }\n      } else {\n        if (text && text.length > 0) {\n          this.onSubmit({\n            author: 'me',\n            type: 'text',\n            data: { text }\n          })\n          this.$refs.userInput.innerHTML = ''\n        }\n      }\n    },\n    _handleEmojiPicked (emoji) {\n      this.onSubmit({\n        author: 'me',\n        type: 'emoji',\n        data: { emoji }\n      })\n    },\n    _handleFileSubmit (file) {\n      this.file = file\n    }\n  }\n}\n</script>\n\n<style>\n.sc-user-input {\n  min-height: 55px;\n  margin: 0px;\n  position: relative;\n  bottom: 0;\n  display: flex;\n  background-color: #f4f7f9;\n  border-bottom-left-radius: 10px;\n  border-bottom-right-radius: 10px;\n  transition: background-color 0.2s ease, box-shadow 0.2s ease;\n}\n\n.sc-user-input--text {\n  width: 300px;\n  resize: none;\n  border: none;\n  outline: none;\n  border-bottom-left-radius: 10px;\n  box-sizing: border-box;\n  padding: 18px;\n  font-size: 15px;\n  font-weight: 400;\n  line-height: 1.33;\n  white-space: pre-wrap;\n  word-wrap: break-word;\n  color: #565867;\n  -webkit-font-smoothing: antialiased;\n  max-height: 200px;\n  overflow: scroll;\n  bottom: 0;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n\n.sc-user-input--text:empty:before {\n  content: attr(placeholder);\n  display: block; /* For Firefox */\n  /* color: rgba(86, 88, 103, 0.3); */\n  filter: contrast(15%);\n  outline: none;\n}\n\n.sc-user-input--buttons {\n  width: 100px;\n  position: absolute;\n  right: 30px;\n  height: 100%;\n  display: flex;\n}\n\n.sc-user-input--button:first-of-type {\n  width: 40px;\n}\n\n.sc-user-input--button {\n  width: 30px;\n  height: 55px;\n  margin-left: 2px;\n  margin-right: 2px;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n}\n\n.sc-user-input.active {\n  box-shadow: none;\n  background-color: white;\n  box-shadow: 0px -5px 20px 0px rgba(150, 165, 190, 0.2);\n}\n\n.sc-user-input--button label {\n  position: relative;\n  height: 24px;\n  padding-left: 3px;\n  cursor: pointer;\n}\n\n.sc-user-input--button label:hover path {\n  fill: rgba(86, 88, 103, 1);\n}\n\n.sc-user-input--button input {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  z-index: 99999;\n  height: 100%;\n  opacity: 0;\n  cursor: pointer;\n  overflow: hidden;\n}\n\n.file-container {\n  background-color: #f4f7f9;\n  border-top-left-radius: 10px;\n  padding: 5px 20px;\n  color: #565867;\n}\n\n.delete-file-message {\n  font-style: normal;\n  float: right;\n  cursor: pointer;\n  color: #c8cad0;\n}\n\n.delete-file-message:hover {\n  color: #5d5e6d;\n}\n\n.icon-file-message {\n  margin-right: 5px;\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-user-input {\n  min-height: 55px;\n  margin: 0px;\n  position: relative;\n  bottom: 0;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  background-color: #f4f7f9;\n  border-bottom-left-radius: 10px;\n  border-bottom-right-radius: 10px;\n  -webkit-transition: background-color 0.2s ease, -webkit-box-shadow 0.2s ease;\n  transition: background-color 0.2s ease, -webkit-box-shadow 0.2s ease;\n  transition: background-color 0.2s ease, box-shadow 0.2s ease;\n  transition: background-color 0.2s ease, box-shadow 0.2s ease, -webkit-box-shadow 0.2s ease;\n}\n.sc-user-input--text {\n  width: 300px;\n  resize: none;\n  border: none;\n  outline: none;\n  border-bottom-left-radius: 10px;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  padding: 18px;\n  font-size: 15px;\n  font-weight: 400;\n  line-height: 1.33;\n  white-space: pre-wrap;\n  word-wrap: break-word;\n  color: #565867;\n  -webkit-font-smoothing: antialiased;\n  max-height: 200px;\n  overflow: scroll;\n  bottom: 0;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.sc-user-input--text:empty:before {\n  content: attr(placeholder);\n  display: block; /* For Firefox */\n  /* color: rgba(86, 88, 103, 0.3); */\n  -webkit-filter: contrast(15%);\n          filter: contrast(15%);\n  outline: none;\n}\n.sc-user-input--buttons {\n  width: 100px;\n  position: absolute;\n  right: 30px;\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n}\n.sc-user-input--button:first-of-type {\n  width: 40px;\n}\n.sc-user-input--button {\n  width: 30px;\n  height: 55px;\n  margin-left: 2px;\n  margin-right: 2px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n}\n.sc-user-input.active {\n  -webkit-box-shadow: none;\n          box-shadow: none;\n  background-color: white;\n  -webkit-box-shadow: 0px -5px 20px 0px rgba(150, 165, 190, 0.2);\n          box-shadow: 0px -5px 20px 0px rgba(150, 165, 190, 0.2);\n}\n.sc-user-input--button label {\n  position: relative;\n  height: 24px;\n  padding-left: 3px;\n  cursor: pointer;\n}\n.sc-user-input--button label:hover path {\n  fill: rgba(86, 88, 103, 1);\n}\n.sc-user-input--button input {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  z-index: 99999;\n  height: 100%;\n  opacity: 0;\n  cursor: pointer;\n  overflow: hidden;\n}\n.file-container {\n  background-color: #f4f7f9;\n  border-top-left-radius: 10px;\n  padding: 5px 20px;\n  color: #565867;\n}\n.delete-file-message {\n  font-style: normal;\n  float: right;\n  cursor: pointer;\n  color: #c8cad0;\n}\n.delete-file-message:hover {\n  color: #5d5e6d;\n}\n.icon-file-message {\n  margin-right: 5px;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/UserInput.vue"],"names":[],"mappings":";AAkJA;EACA,iBAAA;EACA,YAAA;EACA,mBAAA;EACA,UAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;EACA,0BAAA;EACA,gCAAA;EACA,iCAAA;EACA,6EAAA;EAAA,qEAAA;EAAA,6DAAA;EAAA,2FAAA;CACA;AAEA;EACA,aAAA;EACA,aAAA;EACA,aAAA;EACA,cAAA;EACA,gCAAA;EACA,+BAAA;UAAA,uBAAA;EACA,cAAA;EACA,gBAAA;EACA,iBAAA;EACA,kBAAA;EACA,sBAAA;EACA,sBAAA;EACA,eAAA;EACA,oCAAA;EACA,kBAAA;EACA,iBAAA;EACA,UAAA;EACA,mBAAA;EACA,iBAAA;CACA;AAEA;EACA,2BAAA;EACA,eAAA,CAAA,iBAAA;EACA,oCAAA;EACA,8BAAA;UAAA,sBAAA;EACA,cAAA;CACA;AAEA;EACA,aAAA;EACA,mBAAA;EACA,YAAA;EACA,aAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;CACA;AAEA;EACA,YAAA;CACA;AAEA;EACA,YAAA;EACA,aAAA;EACA,iBAAA;EACA,kBAAA;EACA,qBAAA;EAAA,qBAAA;EAAA,cAAA;EACA,6BAAA;EAAA,8BAAA;MAAA,2BAAA;UAAA,uBAAA;EACA,yBAAA;MAAA,sBAAA;UAAA,wBAAA;CACA;AAEA;EACA,yBAAA;UAAA,iBAAA;EACA,wBAAA;EACA,+DAAA;UAAA,uDAAA;CACA;AAEA;EACA,mBAAA;EACA,aAAA;EACA,kBAAA;EACA,gBAAA;CACA;AAEA;EACA,2BAAA;CACA;AAEA;EACA,mBAAA;EACA,QAAA;EACA,OAAA;EACA,YAAA;EACA,eAAA;EACA,aAAA;EACA,WAAA;EACA,gBAAA;EACA,iBAAA;CACA;AAEA;EACA,0BAAA;EACA,6BAAA;EACA,kBAAA;EACA,eAAA;CACA;AAEA;EACA,mBAAA;EACA,aAAA;EACA,gBAAA;EACA,eAAA;CACA;AAEA;EACA,eAAA;CACA;AAEA;EACA,kBAAA;CACA","file":"UserInput.vue","sourcesContent":["<template>\n  <div>\n    <Suggestions :suggestions=\"suggestions\" v-on:sendSuggestion=\"_submitSuggestion\" :colors=\"colors\"/>\n    <div v-if=\"file\" class='file-container' :style=\"{backgroundColor: colors.userInput.text, color: colors.userInput.bg}\">\n      <span class='icon-file-message'><img src=\"./assets/file.svg\" alt='genericFileIcon' height=\"15\" /></span>\n      {{file.name}}\n      <span class='delete-file-message' @click=\"cancelFile()\" ><img src=\"./assets/close.svg\" alt='close icon' height=\"10\" title='Remove the file' /></span>\n    </div>\n    <form class=\"sc-user-input\" :class=\"{active: inputActive}\" :style=\"{background: colors.userInput.bg}\">\n      <div\n        role=\"button\"\n        tabIndex=\"0\"\n        @focus=\"setInputActive(true)\"\n        @blur=\"setInputActive(false)\"\n        @keydown=\"handleKey\"\n        contentEditable=\"true\"\n        :placeholder=\"placeholder\"\n        class=\"sc-user-input--text\"\n        ref=\"userInput\"\n        :style=\"{color: colors.userInput.text}\"\n      >\n      </div>\n      <div class=\"sc-user-input--buttons\">\n        <div class=\"sc-user-input--button\"></div>\n        <div v-if=\"showEmoji\" class=\"sc-user-input--button\">\n          <EmojiIcon :onEmojiPicked=\"_handleEmojiPicked\" :color=\"colors.userInput.text\" />\n        </div>\n        <div v-if=\"showFile\" class=\"sc-user-input--button\">\n          <FileIcons :onChange=\"_handleFileSubmit\" :color=\"colors.userInput.text\" />\n        </div>\n        <div class=\"sc-user-input--button\">\n          <SendIcon :onClick=\"_submitText\" :color=\"colors.userInput.text\" />\n        </div>\n      </div>\n    </form>\n  </div>\n</template>\n\n\n<script>\nimport EmojiIcon from './EmojiIcon.vue'\nimport FileIcons from './FileIcons.vue'\nimport SendIcon from './SendIcon.vue'\nimport Suggestions from './Suggestions.vue'\n\nexport default {\n  components: {\n    EmojiIcon,\n    FileIcons,\n    SendIcon,\n    Suggestions\n  },\n  props: {\n    showEmoji: {\n      type: Boolean,\n      default: () => false\n    },\n    suggestions: {\n      type: Array,\n      default: () => []\n    },\n    showFile: {\n      type: Boolean,\n      default: () => false\n    },\n    onSubmit: {\n      type: Function,\n      required: true\n    },\n    placeholder: {\n      type: String,\n      default: 'Write a reply'\n    },\n    colors: {\n      type: Object,\n      required: true\n    }\n  },\n  data () {\n    return {\n      file: null,\n      inputActive: false\n    }\n  },\n  methods: {\n    cancelFile () {\n      this.file = null\n    },\n    setInputActive (onoff) {\n      this.inputActive = onoff\n    },\n    handleKey (event) {\n      if (event.keyCode === 13 && !event.shiftKey) {\n        this._submitText(event)\n        event.preventDefault()\n      }\n    },\n    _submitSuggestion(suggestion) {\n      this.onSubmit({author: 'me', type: 'text', data: { text: suggestion }})\n    },\n    _submitText (event) {\n      const text = this.$refs.userInput.textContent\n      const file = this.file\n      if (file) {\n        if (text && text.length > 0) {\n          this.onSubmit({\n            author: 'me',\n            type: 'file',\n            data: { text, file }\n          })\n          this.file = null\n          this.$refs.userInput.innerHTML = ''\n        } else {\n          this.onSubmit({\n            author: 'me',\n            type: 'file',\n            data: { file }\n          })\n          this.file = null\n        }\n      } else {\n        if (text && text.length > 0) {\n          this.onSubmit({\n            author: 'me',\n            type: 'text',\n            data: { text }\n          })\n          this.$refs.userInput.innerHTML = ''\n        }\n      }\n    },\n    _handleEmojiPicked (emoji) {\n      this.onSubmit({\n        author: 'me',\n        type: 'emoji',\n        data: { emoji }\n      })\n    },\n    _handleFileSubmit (file) {\n      this.file = file\n    }\n  }\n}\n</script>\n\n<style>\n.sc-user-input {\n  min-height: 55px;\n  margin: 0px;\n  position: relative;\n  bottom: 0;\n  display: flex;\n  background-color: #f4f7f9;\n  border-bottom-left-radius: 10px;\n  border-bottom-right-radius: 10px;\n  transition: background-color 0.2s ease, box-shadow 0.2s ease;\n}\n\n.sc-user-input--text {\n  width: 300px;\n  resize: none;\n  border: none;\n  outline: none;\n  border-bottom-left-radius: 10px;\n  box-sizing: border-box;\n  padding: 18px;\n  font-size: 15px;\n  font-weight: 400;\n  line-height: 1.33;\n  white-space: pre-wrap;\n  word-wrap: break-word;\n  color: #565867;\n  -webkit-font-smoothing: antialiased;\n  max-height: 200px;\n  overflow: scroll;\n  bottom: 0;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n\n.sc-user-input--text:empty:before {\n  content: attr(placeholder);\n  display: block; /* For Firefox */\n  /* color: rgba(86, 88, 103, 0.3); */\n  filter: contrast(15%);\n  outline: none;\n}\n\n.sc-user-input--buttons {\n  width: 100px;\n  position: absolute;\n  right: 30px;\n  height: 100%;\n  display: flex;\n}\n\n.sc-user-input--button:first-of-type {\n  width: 40px;\n}\n\n.sc-user-input--button {\n  width: 30px;\n  height: 55px;\n  margin-left: 2px;\n  margin-right: 2px;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n}\n\n.sc-user-input.active {\n  box-shadow: none;\n  background-color: white;\n  box-shadow: 0px -5px 20px 0px rgba(150, 165, 190, 0.2);\n}\n\n.sc-user-input--button label {\n  position: relative;\n  height: 24px;\n  padding-left: 3px;\n  cursor: pointer;\n}\n\n.sc-user-input--button label:hover path {\n  fill: rgba(86, 88, 103, 1);\n}\n\n.sc-user-input--button input {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  z-index: 99999;\n  height: 100%;\n  opacity: 0;\n  cursor: pointer;\n  overflow: hidden;\n}\n\n.file-container {\n  background-color: #f4f7f9;\n  border-top-left-radius: 10px;\n  padding: 5px 20px;\n  color: #565867;\n}\n\n.delete-file-message {\n  font-style: normal;\n  float: right;\n  cursor: pointer;\n  color: #c8cad0;\n}\n\n.delete-file-message:hover {\n  color: #5d5e6d;\n}\n\n.icon-file-message {\n  margin-right: 5px;\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -14134,7 +14161,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.sc-message--file[data-v-eabae2da] {\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  /* white-space: pre-wrap; */\n  -webkit-font-smoothing: subpixel-antialiased\n}\n.sc-message--content.sent .sc-message--file[data-v-eabae2da] {\n  word-wrap: break-word;\n}\n.sc-message--file-icon[data-v-eabae2da] {\n  text-align: center;\n  margin-left: auto;\n  margin-right: auto;\n  margin-top: 15px;\n  margin-bottom: 0px;\n}\n.sc-message--file-icon[data-v-eabae2da]:hover {\n  opacity: 0.7;\n}\n.sc-message--file-text[data-v-eabae2da] {\n  padding: 17px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased\n}\n.sc-message--file-name[data-v-eabae2da] {\n  color: white;\n  padding-left: 15px;\n  padding-right: 15px;\n  padding-top: 0;\n  font-size: x-small;\n  text-align: center;\n}\n.sc-message--file-name a[data-v-eabae2da] {\n  text-decoration: none;\n  color: #ece7e7;\n}\n.sc-message--file-name a[data-v-eabae2da]:hover {\n  color: white;\n}\n.sc-message--content.sent .sc-message--file-text[data-v-eabae2da] {\n  color: white;\n  background-color: #4e8cff;\n  word-wrap: break-word;\n}\n.sc-message--content.received .sc-message--file[data-v-eabae2da] {\n  color: #263238;\n  background-color: #f4f7f9;\n  margin-right: 40px;\n}\n.sc-message--content.received .sc-message--file-name[data-v-eabae2da] {\n  color: #000;\n}\n.sc-message--content.received .sc-message--file a[data-v-eabae2da] {\n  color: rgba(43, 40, 40, 0.7);\n}\n.sc-message--content.received .sc-message--file a[data-v-eabae2da]:hover {\n  color: #0c0c0c;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/Laravel-Real-time_Socket-io/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/FileMessage.vue"],"names":[],"mappings":";AA8BA;EACA,mBAAA;EACA,iBAAA;EACA,gBAAA;EACA,iBAAA;EACA,4BAAA;EACA,4CAAA;CACA;AAEA;EACA,sBAAA;CACA;AAEA;EACA,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,iBAAA;EACA,mBAAA;CACA;AAEA;EACA,aAAA;CACA;AAEA;EACA,mBAAA;EACA,mBAAA;EACA,iBAAA;EACA,gBAAA;EACA,iBAAA;EACA,sBAAA;EACA,4CAAA;CACA;AAEA;EACA,aAAA;EACA,mBAAA;EACA,oBAAA;EACA,eAAA;EACA,mBAAA;EACA,mBAAA;CACA;AAEA;EACA,sBAAA;EACA,eAAA;CACA;AAEA;EACA,aAAA;CACA;AAEA;EACA,aAAA;EACA,0BAAA;EACA,sBAAA;CACA;AAEA;EACA,eAAA;EACA,0BAAA;EACA,mBAAA;CACA;AAEA;EACA,YAAA;CACA;AAEA;EACA,6BAAA;CACA;AAEA;EACA,eAAA;CACA","file":"FileMessage.vue","sourcesContent":["<template>\n  <div class='sc-message--file' :style=\"messageColors\">\n    <div class='sc-message--file-icon'>\n      <a :href=\"data.file.url || '#'\" target='_blank'>\n        <img src=\"./assets/file.svg\" alt='generic file icon' height=\"60\" />\n      </a>\n    </div>\n    <div class='sc-message--file-name' :style=\"messageColors\">\n      <a :href=\"data.file.url ? data.file.url : '#'\" target='_blank'>{{data.file.name || ''}}</a>\n    </div>\n    <div class=\"sc-message--file-text\" :style=\"messageColors\">{{data.text}}<p v-if=\"data.meta\" class='sc-message--meta' :style=\"messageColors\">{{data.meta}}</p></div>\n  </div>\n</template>\n\n<script>\nexport default {\n  props: {\n    data: {\n      type: Object,\n      required: true\n    },\n    messageColors: {\n      type: Object,\n      required: true\n    }\n  }\n}\n</script>\n\n<style scoped>\n.sc-message--file {\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  /* white-space: pre-wrap; */\n  -webkit-font-smoothing: subpixel-antialiased\n}\n\n.sc-message--content.sent .sc-message--file {\n  word-wrap: break-word;\n}\n\n.sc-message--file-icon {\n  text-align: center;\n  margin-left: auto;\n  margin-right: auto;\n  margin-top: 15px;\n  margin-bottom: 0px;\n}\n\n.sc-message--file-icon:hover {\n  opacity: 0.7;\n}\n\n.sc-message--file-text {\n  padding: 17px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased\n}\n\n.sc-message--file-name {\n  color: white;\n  padding-left: 15px;\n  padding-right: 15px;\n  padding-top: 0;\n  font-size: x-small;\n  text-align: center;\n}\n\n.sc-message--file-name a {\n  text-decoration: none;\n  color: #ece7e7;\n}\n\n.sc-message--file-name a:hover {\n  color: white;\n}\n\n.sc-message--content.sent .sc-message--file-text {\n  color: white;\n  background-color: #4e8cff;\n  word-wrap: break-word;\n}\n\n.sc-message--content.received .sc-message--file {\n  color: #263238;\n  background-color: #f4f7f9;\n  margin-right: 40px;\n}\n\n.sc-message--content.received .sc-message--file-name {\n  color: #000;\n}\n\n.sc-message--content.received .sc-message--file a {\n  color: rgba(43, 40, 40, 0.7);\n}\n\n.sc-message--content.received .sc-message--file a:hover {\n  color: #0c0c0c;\n}\n</style>\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.sc-message--file[data-v-eabae2da] {\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  /* white-space: pre-wrap; */\n  -webkit-font-smoothing: subpixel-antialiased\n}\n.sc-message--content.sent .sc-message--file[data-v-eabae2da] {\n  word-wrap: break-word;\n}\n.sc-message--file-icon[data-v-eabae2da] {\n  text-align: center;\n  margin-left: auto;\n  margin-right: auto;\n  margin-top: 15px;\n  margin-bottom: 0px;\n}\n.sc-message--file-icon[data-v-eabae2da]:hover {\n  opacity: 0.7;\n}\n.sc-message--file-text[data-v-eabae2da] {\n  padding: 17px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased\n}\n.sc-message--file-name[data-v-eabae2da] {\n  color: white;\n  padding-left: 15px;\n  padding-right: 15px;\n  padding-top: 0;\n  font-size: x-small;\n  text-align: center;\n}\n.sc-message--file-name a[data-v-eabae2da] {\n  text-decoration: none;\n  color: #ece7e7;\n}\n.sc-message--file-name a[data-v-eabae2da]:hover {\n  color: white;\n}\n.sc-message--content.sent .sc-message--file-text[data-v-eabae2da] {\n  color: white;\n  background-color: #4e8cff;\n  word-wrap: break-word;\n}\n.sc-message--content.received .sc-message--file[data-v-eabae2da] {\n  color: #263238;\n  background-color: #f4f7f9;\n  margin-right: 40px;\n}\n.sc-message--content.received .sc-message--file-name[data-v-eabae2da] {\n  color: #000;\n}\n.sc-message--content.received .sc-message--file a[data-v-eabae2da] {\n  color: rgba(43, 40, 40, 0.7);\n}\n.sc-message--content.received .sc-message--file a[data-v-eabae2da]:hover {\n  color: #0c0c0c;\n}\n", "", {"version":3,"sources":["/home/kudoplex/Documents/realtime-chat-laravel/laravel-vuejs/node_modules/vue-beautiful-chat/src/node_modules/vue-beautiful-chat/src/FileMessage.vue"],"names":[],"mappings":";AA8BA;EACA,mBAAA;EACA,iBAAA;EACA,gBAAA;EACA,iBAAA;EACA,4BAAA;EACA,4CAAA;CACA;AAEA;EACA,sBAAA;CACA;AAEA;EACA,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,iBAAA;EACA,mBAAA;CACA;AAEA;EACA,aAAA;CACA;AAEA;EACA,mBAAA;EACA,mBAAA;EACA,iBAAA;EACA,gBAAA;EACA,iBAAA;EACA,sBAAA;EACA,4CAAA;CACA;AAEA;EACA,aAAA;EACA,mBAAA;EACA,oBAAA;EACA,eAAA;EACA,mBAAA;EACA,mBAAA;CACA;AAEA;EACA,sBAAA;EACA,eAAA;CACA;AAEA;EACA,aAAA;CACA;AAEA;EACA,aAAA;EACA,0BAAA;EACA,sBAAA;CACA;AAEA;EACA,eAAA;EACA,0BAAA;EACA,mBAAA;CACA;AAEA;EACA,YAAA;CACA;AAEA;EACA,6BAAA;CACA;AAEA;EACA,eAAA;CACA","file":"FileMessage.vue","sourcesContent":["<template>\n  <div class='sc-message--file' :style=\"messageColors\">\n    <div class='sc-message--file-icon'>\n      <a :href=\"data.file.url || '#'\" target='_blank'>\n        <img src=\"./assets/file.svg\" alt='generic file icon' height=\"60\" />\n      </a>\n    </div>\n    <div class='sc-message--file-name' :style=\"messageColors\">\n      <a :href=\"data.file.url ? data.file.url : '#'\" target='_blank'>{{data.file.name || ''}}</a>\n    </div>\n    <div class=\"sc-message--file-text\" :style=\"messageColors\">{{data.text}}<p v-if=\"data.meta\" class='sc-message--meta' :style=\"messageColors\">{{data.meta}}</p></div>\n  </div>\n</template>\n\n<script>\nexport default {\n  props: {\n    data: {\n      type: Object,\n      required: true\n    },\n    messageColors: {\n      type: Object,\n      required: true\n    }\n  }\n}\n</script>\n\n<style scoped>\n.sc-message--file {\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  /* white-space: pre-wrap; */\n  -webkit-font-smoothing: subpixel-antialiased\n}\n\n.sc-message--content.sent .sc-message--file {\n  word-wrap: break-word;\n}\n\n.sc-message--file-icon {\n  text-align: center;\n  margin-left: auto;\n  margin-right: auto;\n  margin-top: 15px;\n  margin-bottom: 0px;\n}\n\n.sc-message--file-icon:hover {\n  opacity: 0.7;\n}\n\n.sc-message--file-text {\n  padding: 17px 20px;\n  border-radius: 6px;\n  font-weight: 300;\n  font-size: 14px;\n  line-height: 1.4;\n  white-space: pre-wrap;\n  -webkit-font-smoothing: subpixel-antialiased\n}\n\n.sc-message--file-name {\n  color: white;\n  padding-left: 15px;\n  padding-right: 15px;\n  padding-top: 0;\n  font-size: x-small;\n  text-align: center;\n}\n\n.sc-message--file-name a {\n  text-decoration: none;\n  color: #ece7e7;\n}\n\n.sc-message--file-name a:hover {\n  color: white;\n}\n\n.sc-message--content.sent .sc-message--file-text {\n  color: white;\n  background-color: #4e8cff;\n  word-wrap: break-word;\n}\n\n.sc-message--content.received .sc-message--file {\n  color: #263238;\n  background-color: #f4f7f9;\n  margin-right: 40px;\n}\n\n.sc-message--content.received .sc-message--file-name {\n  color: #000;\n}\n\n.sc-message--content.received .sc-message--file a {\n  color: rgba(43, 40, 40, 0.7);\n}\n\n.sc-message--content.received .sc-message--file a:hover {\n  color: #0c0c0c;\n}\n</style>\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -62934,7 +62961,9 @@ var render = function() {
           })
         ],
         1
-      )
+      ),
+      _vm._v(" "),
+      _c("notifications", { attrs: { group: "foo", position: "top left" } })
     ],
     2
   )
@@ -63938,6 +63967,1133 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-eabae2da", module.exports)
   }
 }
+
+/***/ }),
+
+/***/ "./node_modules/vue-notification/dist/index.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(true)
+		module.exports = factory(__webpack_require__("./node_modules/vue/dist/vue.common.js"));
+	else if(typeof define === 'function' && define.amd)
+		define(["vue"], factory);
+	else if(typeof exports === 'object')
+		exports["vue-notification"] = factory(require("vue"));
+	else
+		root["vue-notification"] = factory(root["vue"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_20__) {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "/dist/";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+// this module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  scopeId,
+  cssModules
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  // inject cssModules
+  if (cssModules) {
+    var computed = Object.create(options.computed || null)
+    Object.keys(cssModules).forEach(function (key) {
+      var module = cssModules[key]
+      computed[key] = function () { return module }
+    })
+    options.computed = computed
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return events; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
+
+var events = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a();
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Notifications_vue__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Notifications_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Notifications_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__events__ = __webpack_require__(1);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+
+
+
+var Notify = {
+  install: function install(Vue) {
+    var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    if (this.installed) {
+      return;
+    }
+
+    this.installed = true;
+    this.params = args;
+
+    Vue.component(args.componentName || 'notifications', __WEBPACK_IMPORTED_MODULE_0__Notifications_vue___default.a);
+
+    var notify = function notify(params) {
+      if (typeof params === 'string') {
+        params = { title: '', text: params };
+      }
+
+      if ((typeof params === 'undefined' ? 'undefined' : _typeof(params)) === 'object') {
+        __WEBPACK_IMPORTED_MODULE_1__events__["a" /* events */].$emit('add', params);
+      }
+    };
+
+    var name = args.name || 'notify';
+
+    Vue.prototype['$' + name] = notify;
+    Vue[name] = notify;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Notify);
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/* styles */
+__webpack_require__(17)
+
+var Component = __webpack_require__(0)(
+  /* script */
+  __webpack_require__(5),
+  /* template */
+  __webpack_require__(15),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'CssGroup',
+  props: ['name']
+});
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__index__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__events__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__defaults__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__VelocityGroup_vue__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__VelocityGroup_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__VelocityGroup_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__CssGroup_vue__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__CssGroup_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__CssGroup_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parser__ = __webpack_require__(8);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+
+
+
+
+var STATE = {
+  IDLE: 0,
+  DESTROYED: 2
+};
+
+var Component = {
+  name: 'Notifications',
+  components: {
+    VelocityGroup: __WEBPACK_IMPORTED_MODULE_4__VelocityGroup_vue___default.a,
+    CssGroup: __WEBPACK_IMPORTED_MODULE_5__CssGroup_vue___default.a
+  },
+  props: {
+    group: {
+      type: String,
+      default: ''
+    },
+
+    width: {
+      type: [Number, String],
+      default: 300
+    },
+
+    reverse: {
+      type: Boolean,
+      default: false
+    },
+
+    position: {
+      type: [String, Array],
+      default: function _default() {
+        return __WEBPACK_IMPORTED_MODULE_3__defaults__["a" /* default */].position;
+      }
+    },
+
+    classes: {
+      type: String,
+      default: 'vue-notification'
+    },
+
+    animationType: {
+      type: String,
+      default: 'css',
+      validator: function validator(value) {
+        return value === 'css' || value === 'velocity';
+      }
+    },
+
+    animation: {
+      type: Object,
+      default: function _default() {
+        return __WEBPACK_IMPORTED_MODULE_3__defaults__["a" /* default */].velocityAnimation;
+      }
+    },
+
+    animationName: {
+      type: String,
+      default: __WEBPACK_IMPORTED_MODULE_3__defaults__["a" /* default */].cssAnimation
+    },
+
+    speed: {
+      type: Number,
+      default: 300
+    },
+
+    cooldown: {
+      type: Number,
+      default: 0
+    },
+
+    duration: {
+      type: Number,
+      default: 3000
+    },
+
+    delay: {
+      type: Number,
+      default: 0
+    },
+
+    max: {
+      type: Number,
+      default: Infinity
+    }
+  },
+  data: function data() {
+    return {
+      list: [],
+      velocity: __WEBPACK_IMPORTED_MODULE_0__index__["default"].params.velocity
+    };
+  },
+  mounted: function mounted() {
+    __WEBPACK_IMPORTED_MODULE_1__events__["a" /* events */].$on('add', this.addItem);
+  },
+
+  computed: {
+    actualWidth: function actualWidth() {
+      return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_6__parser__["a" /* default */])(this.width);
+    },
+    isVA: function isVA() {
+      return this.animationType === 'velocity';
+    },
+    componentName: function componentName() {
+      return this.isVA ? 'VelocityGroup' : 'CssGroup';
+    },
+    styles: function styles() {
+      var _listToDirection = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__util__["a" /* listToDirection */])(this.position),
+          x = _listToDirection.x,
+          y = _listToDirection.y;
+
+      var width = this.actualWidth.value;
+      var suffix = this.actualWidth.type;
+
+      var styles = _defineProperty({
+        width: width + suffix
+      }, y, '0px');
+
+      if (x === 'center') {
+        styles['left'] = 'calc(50% - ' + width / 2 + suffix + ')';
+      } else {
+        styles[x] = '0px';
+      }
+
+      return styles;
+    },
+    active: function active() {
+      return this.list.filter(function (v) {
+        return v.state !== STATE.DESTROYED;
+      });
+    },
+    botToTop: function botToTop() {
+      return this.styles.hasOwnProperty('bottom');
+    }
+  },
+  methods: {
+    addItem: function addItem(event) {
+      var _this = this;
+
+      event.group = event.group || '';
+
+      if (this.group !== event.group) {
+        return;
+      }
+
+      if (event.clean || event.clear) {
+        this.destroyAll();
+        return;
+      }
+
+      var duration = typeof event.duration === 'number' ? event.duration : this.duration;
+
+      var speed = typeof event.speed === 'number' ? event.speed : this.speed;
+
+      var title = event.title,
+          text = event.text,
+          type = event.type,
+          data = event.data;
+
+
+      var item = {
+        id: __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__util__["b" /* Id */])(),
+        title: title,
+        text: text,
+        type: type,
+        state: STATE.IDLE,
+        speed: speed,
+        length: duration + 2 * speed,
+        data: data
+      };
+
+      if (duration >= 0) {
+        item.timer = setTimeout(function () {
+          _this.destroy(item);
+        }, item.length);
+      }
+
+      var direction = this.reverse ? !this.botToTop : this.botToTop;
+
+      var indexToDestroy = -1;
+
+      if (direction) {
+        this.list.push(item);
+
+        if (this.active.length > this.max) {
+          indexToDestroy = 0;
+        }
+      } else {
+        this.list.unshift(item);
+
+        if (this.active.length > this.max) {
+          indexToDestroy = this.active.length - 1;
+        }
+      }
+
+      if (indexToDestroy !== -1) {
+        this.destroy(this.active[indexToDestroy]);
+      }
+    },
+    notifyClass: function notifyClass(item) {
+      return ['notification', this.classes, item.type];
+    },
+    notifyWrapperStyle: function notifyWrapperStyle(item) {
+      return this.isVA ? null : {
+        transition: 'all ' + item.speed + 'ms'
+      };
+    },
+    destroy: function destroy(item) {
+      clearTimeout(item.timer);
+      item.state = STATE.DESTROYED;
+
+      if (!this.isVA) {
+        this.clean();
+      }
+    },
+    destroyAll: function destroyAll() {
+      this.active.forEach(this.destroy);
+    },
+    getAnimation: function getAnimation(index, el) {
+      var animation = this.animation[index];
+
+      return typeof animation === 'function' ? animation.call(this, el) : animation;
+    },
+    enter: function enter(_ref) {
+      var el = _ref.el,
+          complete = _ref.complete;
+
+      var animation = this.getAnimation('enter', el);
+
+      this.velocity(el, animation, {
+        duration: this.speed,
+        complete: complete
+      });
+    },
+    leave: function leave(_ref2) {
+      var el = _ref2.el,
+          complete = _ref2.complete;
+
+      var animation = this.getAnimation('leave', el);
+
+      this.velocity(el, animation, {
+        duration: this.speed,
+        complete: complete
+      });
+    },
+    clean: function clean() {
+      this.list = this.list.filter(function (v) {
+        return v.state !== STATE.DESTROYED;
+      });
+    }
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Component);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'VelocityGroup',
+  methods: {
+    enter: function enter(el, complete) {
+      this.$emit('enter', { el: el, complete: complete });
+    },
+    leave: function leave(el, complete) {
+      this.$emit('leave', { el: el, complete: complete });
+    },
+    afterLeave: function afterLeave() {
+      this.$emit('afterLeave');
+    }
+  }
+});
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = ({
+  position: ['top', 'right'],
+  cssAnimation: 'vn-fade',
+  velocityAnimation: {
+    enter: function enter(el) {
+      var height = el.clientHeight;
+
+      return {
+        height: [height, 0],
+        opacity: [1, 0]
+      };
+    },
+    leave: {
+      height: 0,
+      opacity: [0, 1]
+    }
+  }
+});
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export parse */
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var floatRegexp = '[-+]?[0-9]*.?[0-9]+';
+
+var types = [{
+  name: 'px',
+  regexp: new RegExp('^' + floatRegexp + 'px$')
+}, {
+  name: '%',
+  regexp: new RegExp('^' + floatRegexp + '%$')
+}, {
+  name: 'px',
+  regexp: new RegExp('^' + floatRegexp + '$')
+}];
+
+var getType = function getType(value) {
+  if (value === 'auto') {
+    return {
+      type: value,
+      value: 0
+    };
+  }
+
+  for (var i = 0; i < types.length; i++) {
+    var type = types[i];
+    if (type.regexp.test(value)) {
+      return {
+        type: type.name,
+        value: parseFloat(value)
+      };
+    }
+  }
+
+  return {
+    type: '',
+    value: value
+  };
+};
+
+var parse = function parse(value) {
+  switch (typeof value === 'undefined' ? 'undefined' : _typeof(value)) {
+    case 'number':
+      return { type: 'px', value: value };
+    case 'string':
+      return getType(value);
+    default:
+      return { type: '', value: value };
+  }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (parse);
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Id; });
+/* unused harmony export split */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return listToDirection; });
+var directions = {
+  x: ['left', 'center', 'right'],
+  y: ['top', 'bottom']
+};
+
+var Id = function (i) {
+  return function () {
+    return i++;
+  };
+}(0);
+
+var split = function split(value) {
+  if (typeof value !== 'string') {
+    return [];
+  }
+
+  return value.split(/\s+/gi).filter(function (v) {
+    return v;
+  });
+};
+
+var listToDirection = function listToDirection(value) {
+  if (typeof value === 'string') {
+    value = split(value);
+  }
+
+  var x = null;
+  var y = null;
+
+  value.forEach(function (v) {
+    if (directions.y.indexOf(v) !== -1) {
+      y = v;
+    }
+    if (directions.x.indexOf(v) !== -1) {
+      x = v;
+    }
+  });
+
+  return { x: x, y: y };
+};
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(11)();
+// imports
+
+
+// module
+exports.push([module.i, ".notifications{display:block;position:fixed;z-index:5000}.notification-wrapper{display:block;overflow:hidden;width:100%;margin:0;padding:0}.notification{display:block;box-sizing:border-box;background:#fff;text-align:left}.notification-title{font-weight:600}.vue-notification{font-size:12px;padding:10px;margin:0 5px 5px;color:#fff;background:#44a4fc;border-left:5px solid #187fe7}.vue-notification.warn{background:#ffb648;border-left-color:#f48a06}.vue-notification.error{background:#e54d42;border-left-color:#b82e24}.vue-notification.success{background:#68cd86;border-left-color:#42a85f}.vn-fade-enter-active,.vn-fade-leave-active,.vn-fade-move{transition:all .5s}.vn-fade-enter,.vn-fade-leave-to{opacity:0}", ""]);
+
+// exports
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function() {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		var result = [];
+		for(var i = 0; i < this.length; i++) {
+			var item = this[i];
+			if(item[2]) {
+				result.push("@media " + item[2] + "{" + item[1] + "}");
+			} else {
+				result.push(item[1]);
+			}
+		}
+		return result.join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(0)(
+  /* script */
+  __webpack_require__(4),
+  /* template */
+  __webpack_require__(16),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(0)(
+  /* script */
+  __webpack_require__(6),
+  /* template */
+  __webpack_require__(14),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('transition-group', {
+    attrs: {
+      "css": false
+    },
+    on: {
+      "enter": _vm.enter,
+      "leave": _vm.leave,
+      "after-leave": _vm.afterLeave
+    }
+  }, [_vm._t("default")], 2)
+},staticRenderFns: []}
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "notifications",
+    style: (_vm.styles)
+  }, [_c(_vm.componentName, {
+    tag: "component",
+    attrs: {
+      "name": _vm.animationName
+    },
+    on: {
+      "enter": _vm.enter,
+      "leave": _vm.leave,
+      "after-leave": _vm.clean
+    }
+  }, _vm._l((_vm.list), function(item) {
+    return (item.state != 2) ? _c('div', {
+      key: item.id,
+      staticClass: "notification-wrapper",
+      style: (_vm.notifyWrapperStyle(item)),
+      attrs: {
+        "data-id": item.id
+      }
+    }, [_vm._t("body", [_c('div', {
+      class: _vm.notifyClass(item),
+      on: {
+        "click": function($event) {
+          _vm.destroy(item)
+        }
+      }
+    }, [(item.title) ? _c('div', {
+      staticClass: "notification-title",
+      domProps: {
+        "innerHTML": _vm._s(item.title)
+      }
+    }) : _vm._e(), _vm._v(" "), _c('div', {
+      staticClass: "notification-content",
+      domProps: {
+        "innerHTML": _vm._s(item.text)
+      }
+    })])], {
+      item: item,
+      close: function () { return _vm.destroy(item); }
+    })], 2) : _vm._e()
+  }))], 1)
+},staticRenderFns: []}
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('transition-group', {
+    attrs: {
+      "name": _vm.name
+    }
+  }, [_vm._t("default")], 2)
+},staticRenderFns: []}
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(10);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(18)("2901aeae", content, true);
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __webpack_require__(19)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction) {
+  isProduction = _isProduction
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+/**
+ * Translates the list format produced by css-loader into something
+ * easier to manipulate.
+ */
+module.exports = function listToStyles (parentId, list) {
+  var styles = []
+  var newStyles = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i]
+    var id = item[0]
+    var css = item[1]
+    var media = item[2]
+    var sourceMap = item[3]
+    var part = {
+      id: parentId + ':' + i,
+      css: css,
+      media: media,
+      sourceMap: sourceMap
+    }
+    if (!newStyles[id]) {
+      styles.push(newStyles[id] = { id: id, parts: [part] })
+    } else {
+      newStyles[id].parts.push(part)
+    }
+  }
+  return styles
+}
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_20__;
+
+/***/ })
+/******/ ]);
+});
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
@@ -75962,6 +77118,8 @@ window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo__["a" /* default */](
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_beautiful_chat__ = __webpack_require__("./node_modules/vue-beautiful-chat/src/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_notification__ = __webpack_require__("./node_modules/vue-notification/dist/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_notification___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_notification__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -75973,6 +77131,9 @@ __webpack_require__("./resources/js/bootstrap.js");
 window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_vue_beautiful_chat__["a" /* default */]);
+
+
+Vue.use(__WEBPACK_IMPORTED_MODULE_1_vue_notification___default.a);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

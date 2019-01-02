@@ -10,6 +10,9 @@ window.Vue = require('vue');
 import Chat from 'vue-beautiful-chat';
 Vue.use(Chat);
 
+import Notifications from 'vue-notification';
+Vue.use(Notifications);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

@@ -21,8 +21,12 @@
             :messageStyling="messageStyling"
             v-model.lazy="search"/>
         </div>
+        <notifications
+            group="foo"
+            position="top left"/>
     </div>
 </template>
+
 
 <script>
     export default {
@@ -44,7 +48,7 @@
                 ], // the list of the messages to show, can be paginated and adjusted dynamically
                 newMessagesCount: 0,
                 isChatOpen: false, // to determine whether the chat window should be open or closed
-                showTypingIndicator: 'me', // when set to a value matching the participant.id it shows the typing indicator for the specific user
+                showTypingIndicator: '', // when set to a value matching the participant.id it shows the typing indicator for the specific user
                 colors: {
                     header: {
                     bg: '#4e8cff',
@@ -104,6 +108,29 @@
                         name: user.username,
                         imageUrl: 'https://avatars3.githubusercontent.com/u/37018832?s=200&v=4'
                     });
+
+                    this.$notify({
+                            group: 'foo',
+                            title: `${user.username} is join to chatroom`,
+                            text: `Hello! ${user.username} is join to chatroom`,
+                            type: 'success',
+                            duration: 6000
+                        });
+                });
+            window.Echo.channel('public-new-user-leave')
+                .listen('NewUserLeaveChat', payload => {
+                    console.log(payload)
+                    let { user } = payload;
+                    // user = JSON.parse(user);
+                    console.log(user)
+
+                    this.$notify({
+                            group: 'foo',
+                            title: `${user} is exiting chatroom`,
+                            text: `Hello! ${user} is exitng chatroom`,
+                            type: 'info',
+                            duration: 6000
+                        });
                 });
         },
         methods: {
@@ -189,17 +216,19 @@
             closeChat () {
                 // TODO, variable participant handling when close chatbox
                 // called when the user clicks on the botton to close the chat
-                this.isChatOpen = false
-            },
-            signalChange: function(evt){
-                //    this.$emit("change", evt);
-                   console.log('asdfasfasf')
+                this.isChatOpen = false;
+                axios.get(`/ajax/new-user-leave-chat`)
+                     .catch(function (error) {
+                            return error.response;
+                      }).then((response) => {
+                            console.log('response :')
+                            console.log(response)
+                            if (response.status == 200) {
+                                const user = response.data;
+                                // this.currentUser = user;
+                            }
+                    });
             }
-        },
-        watch: {
-            search: function (value) {
-                console.log(value);
-            }
-        }    
+        }   
     };
 </script>

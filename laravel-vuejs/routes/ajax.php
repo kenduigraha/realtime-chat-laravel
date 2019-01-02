@@ -20,3 +20,5 @@ Route::get('/get-message/', 'FrontController@getAllMessages');
 
 
 Route::get('/new-user-join-chat/', 'FrontController@doNewUserJoinChat');
+
+Route::get('/new-user-leave-chat/', 'FrontController@doNewUserLeaveChat');
