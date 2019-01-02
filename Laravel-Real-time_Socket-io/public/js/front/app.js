@@ -6967,8 +6967,7 @@ exports.default = {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
+//
 //
 //
 //
@@ -7000,20 +6999,17 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     data: function data() {
         return {
             messageFront: [],
+            currentUser: {},
             participants: [{
-                id: 'user1',
-                name: 'Matteo',
+                id: 'bot',
+                name: 'BOT',
                 imageUrl: 'https://avatars3.githubusercontent.com/u/1915989?s=230&v=4'
-            }, {
-                id: 'user2',
-                name: 'Support',
-                imageUrl: 'https://avatars3.githubusercontent.com/u/37018832?s=200&v=4'
             }], // the list of all the participant of the conversation. `name` is the user name, `id` is used to establish the author of a message, `imageUrl` is supposed to be the user avatar.
             titleImageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
-            messageList: [{ type: 'text', author: 'me', data: { text: 'Say yes!' } }, { type: 'text', author: 'user1', data: { text: 'No.' } }], // the list of the messages to show, can be paginated and adjusted dynamically
+            messageList: [{ type: 'text', author: 'BOT', data: { text: 'Welcome to chatbox. I\'m your personal assistant.' } }], // the list of the messages to show, can be paginated and adjusted dynamically
             newMessagesCount: 0,
             isChatOpen: false, // to determine whether the chat window should be open or closed
-            showTypingIndicator: '', // when set to a value matching the participant.id it shows the typing indicator for the specific user
+            showTypingIndicator: 'me', // when set to a value matching the participant.id it shows the typing indicator for the specific user
             colors: {
                 header: {
                     bg: '#4e8cff',
@@ -7038,71 +7034,141 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                     text: '#565867'
                 }
             }, // specifies the color scheme for the component
-            alwaysScrollToBottom: false, // when set to true always scrolls the chat to the bottom when new events are in (new message, user starts typing...)
-            messageStyling: true
+            alwaysScrollToBottom: true, // when set to true always scrolls the chat to the bottom when new events are in (new message, user starts typing...)
+            messageStyling: true,
+            search: ''
         };
     },
     mounted: function mounted() {
-        var _this = this;
+        // axios.get(`/ajax/get-message`)
+        //          .catch(function (error) {
+        //                 return error.response;
+        //           }).then((response) => {
+        //                 console.log('response :')
+        //                 console.log(response)
+        //                 if (response.status == 200) {        
+        //                     this.messageFront = response.data;
+        //                 }
+        //             });
 
-        axios.get('/ajax/get-message').catch(function (error) {
-            return error.response;
-        }).then(function (response) {
-            console.log('response :');
-            console.log(response);
-            if (response.status == 200) {
-                _this.messageFront = response.data;
-            }
-        });
-        axios.get('/ajax/new-user-join-chat').catch(function (error) {
-            return error.response;
-        }).then(function (response) {
-            console.log('response :');
-            console.log(response);
-            if (response.status == 200) {
-                // this.messageFront = response.data;
-            }
-        });
     },
     created: function created() {
-        var _this2 = this;
+        var _this = this;
 
         // called after the component is created
         window.Echo.channel('public-message').listen('PublicMessageSent', function (payload) {
             // console.log(payload)
-            _this2.placeMessage(payload);
+            _this.placeMessage(payload);
         });
         window.Echo.channel('public-new-user-join').listen('NewUserJoinChat', function (payload) {
             console.log(payload);
-            // this.placeMessage(payload) 
+            var user = payload.user;
+            // user = JSON.parse(user);
+
+            console.log(user);
+            _this.participants.push({
+                id: String(user.id),
+                name: user.username,
+                imageUrl: 'https://avatars3.githubusercontent.com/u/37018832?s=200&v=4'
+            });
         });
     },
 
     methods: {
         placeMessage: function placeMessage(payload) {
-            console.log(this.messageFront);
+            var message = payload.message,
+                user = payload.user;
+
+            console.log(user);
+            console.log(message);
             // this.messageFront = message;
-            this.messageFront.push(payload);
+            // this.messageFront.push(payload)
+            this.messageList.push({
+                type: 'text', // TODO
+                author: user.id === this.currentUser.id ? "me" : this.currentUser.username, // TODO
+                data: { text: message }
+            });
         },
         sendMessage: function sendMessage(text) {
+            var _this2 = this;
+
             if (text.length > 0) {
+                console.log('send message');
+                // TODO : refactor
                 this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1;
-                this.onMessageWasSent({ author: 'support', type: 'text', data: { text: text } });
+                axios.post('/ajax//send-message/', { message: text }).catch(function (error) {
+                    return error.response;
+                }).then(function (response) {
+                    console.log('response :');
+                    console.log(response);
+                    if (response.status == 200) {
+                        // todo type text or files
+                        _this2.onMessageWasSent({ author: _this2.currentUser.username, type: 'text', data: { text: text } });
+                    }
+                });
             }
         },
         onMessageWasSent: function onMessageWasSent(message) {
+            console.log('senttt');
             // called when the user sends a message
-            this.messageList = [].concat(_toConsumableArray(this.messageList), [message]);
+            // TODO : if files
+            axios.post('/ajax/send-message/', { message: message.data.text }).catch(function (error) {
+                return error.response;
+            }).then(function (response) {
+                console.log('response :');
+                console.log(response);
+                if (response.status == 200) {
+                    // this.messageList = [ ...this.messageList, message ]
+                }
+            });
         },
         openChat: function openChat() {
-            console.log('asdfsaf');
+            var _this3 = this;
+
+            axios.get('/ajax/new-user-join-chat').catch(function (error) {
+                return error.response;
+            }).then(function (response) {
+                console.log('response :');
+                console.log(response);
+                if (response.status == 200) {
+                    var user = response.data;
+                    _this3.currentUser = user;
+                }
+            });
+            axios.get('/ajax/get-message').catch(function (error) {
+                return error.response;
+            }).then(function (response) {
+                console.log('response :');
+                console.log(response);
+                if (response.status == 200) {
+                    var messages = response.data;
+                    messages.map(function (msg) {
+                        _this3.messageList.push({
+                            type: 'text', // TODO
+                            author: msg.user_id === _this3.currentUser.id ? "me" : _this3.currentUser.username, // TODO
+                            data: { text: msg.message }
+                        });
+                    });
+                }
+            });
             // called when the user clicks on the fab button to open the chat
             this.isChatOpen = true;
             this.newMessagesCount = 0;
         },
         closeChat: function closeChat() {
+            // TODO, variable participant handling when close chatbox
             // called when the user clicks on the botton to close the chat
             this.isChatOpen = false;
+        },
+
+        signalChange: function signalChange(evt) {
+            //    this.$emit("change", evt);
+            console.log('asdfasfasf');
+        }
+    },
+    watch: {
+        search: function search(value) {
+            console.log(value);
         }
     }
 });
@@ -62857,6 +62923,13 @@ var render = function() {
               colors: _vm.colors,
               alwaysScrollToBottom: _vm.alwaysScrollToBottom,
               messageStyling: _vm.messageStyling
+            },
+            model: {
+              value: _vm.search,
+              callback: function($$v) {
+                _vm.search = $$v
+              },
+              expression: "search"
             }
           })
         ],

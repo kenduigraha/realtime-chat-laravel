@@ -43,6 +43,7 @@ class PublicMessageSent implements ShouldBroadcast
       * @var string $message The message to be publicly spread
       */
     public $message;
+    public $user;
 
     /**
      * Create a new event instance.
@@ -51,9 +52,10 @@ class PublicMessageSent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(string $message)
+    public function __construct(string $message, $user)
     {
         $this->message = $message;
+        $this->user = $user;
     }
 
     /**

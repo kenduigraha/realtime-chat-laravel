@@ -42,7 +42,7 @@ class NewUserJoinChat implements ShouldBroadcast
       *
       * @var string $message The message to be publicly spread
       */
-    public $username;
+    public $user;
 
     /**
      * Create a new event instance.
@@ -51,9 +51,9 @@ class NewUserJoinChat implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(string $username)
+    public function __construct($user)
     {
-        $this->username = $username;
+        $this->user = $user;
     }
 
     /**

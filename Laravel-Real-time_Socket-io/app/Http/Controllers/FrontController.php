@@ -62,11 +62,12 @@ class FrontController extends Controller
 
     public function getAllMessages(): object
     {
+        $currentUser = auth()->user();
         /* The only way I found to send only the message to vue */
-        $homeMessage = \App\HomeMessage::all();
-        // dd($homeMessage);
-        $message = ($homeMessage)? 
-            $homeMessage : Inspiring::quote();
+        $message = \App\HomeMessage::get();
+        // dd($message);
+        // $message = ($homeMessage)? 
+        //     $homeMessage : Inspiring::quote();
         return response()->json($message);
     }
 
@@ -74,7 +75,7 @@ class FrontController extends Controller
     {
         $currentUser = auth()->user();
 
-        NewUserJoinChat::dispatch($currentUser->username);
-        return response(request('message'), 200); // return in json format
+        NewUserJoinChat::dispatch($currentUser);
+        return response()->json($currentUser); // return in json format
     }
 }

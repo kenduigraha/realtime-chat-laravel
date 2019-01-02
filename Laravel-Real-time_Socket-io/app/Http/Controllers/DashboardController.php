@@ -64,8 +64,9 @@ class DashboardController extends Controller
     {
         auth()->user()->homeMessages()
             ->create(['message' => $request->message]); // save the message
+            $currentUser = auth()->user();
             // dispatch the event 
-            PublicMessageSent::dispatch($request->message);
+            PublicMessageSent::dispatch($request->message, $currentUser);
             return response(request('message'), 200); // return in json format
     }
 }
