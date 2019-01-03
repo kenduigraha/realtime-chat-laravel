@@ -105,14 +105,14 @@
                     console.log(user)
                     this.participants.push({
                         id: String(user.id),
-                        name: user.username,
+                        name: user.name,
                         imageUrl: 'https://avatars3.githubusercontent.com/u/37018832?s=200&v=4'
                     });
 
                     this.$notify({
                             group: 'foo',
-                            title: `${user.username} is join to chatroom`,
-                            text: `Hello! ${user.username} is join to chatroom`,
+                            title: `${user.name} is join to chatroom`,
+                            text: `Hello! ${user.name} is join to chatroom`,
                             type: 'success',
                             duration: 6000
                         });
@@ -142,7 +142,7 @@
                 // this.messageFront.push(payload)
                 this.messageList.push({ 
                     type: 'text', // TODO
-                    author: user.id === this.currentUser.id ? "me" : this.currentUser.username, // TODO
+                    author: user.id === this.currentUser.id ? "me" : this.currentUser.name, // TODO
                     data: { text: message }
                 });
             },
@@ -159,7 +159,7 @@
                                 console.log(response)
                                 if (response.status == 200) {
                                     // todo type text or files
-                                    this.onMessageWasSent({ author: this.currentUser.username, type: 'text', data: { text } })
+                                    this.onMessageWasSent({ author: this.currentUser.name, type: 'text', data: { text } })
                                 }
                         });
 
@@ -203,7 +203,7 @@
                                     messages.map(msg => {
                                         this.messageList.push({ 
                                             type: 'text', // TODO
-                                            author: msg.user_id === this.currentUser.id ? "me" : this.currentUser.username, // TODO
+                                            author: msg.user_id === this.currentUser.id ? "me" : this.currentUser.name, // TODO
                                             data: { text: msg.message }
                                         });
                                     });
