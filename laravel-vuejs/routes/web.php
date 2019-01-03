@@ -11,10 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+/* Non authenticated routes */
+Route::get('/', 'FrontController@index')->name('home');
 
+/* Auth routes */
+Route::get('/logout','Auth\LoginController@logout'); // adding a get route to the logout - mouse hater...
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
