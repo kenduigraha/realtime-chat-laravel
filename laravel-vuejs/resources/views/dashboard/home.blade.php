@@ -12,9 +12,9 @@
                     </h3>
                 </div>
 
-                <div class="card-body">
-                    <home-message-block></home-message-block>
-                </div>
+                <!-- <div class="card-body"> -->
+                    <chat-room></chat-room>
+                <!-- </div> -->
             </div>
 
         </div>

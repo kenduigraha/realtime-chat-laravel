@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -8,14 +7,19 @@
 require('./../bootstrap');
 
 window.Vue = require('vue');
+import Chat from 'vue-beautiful-chat';
+Vue.use(Chat);
+
+import Notifications from 'vue-notification';
+Vue.use(Notifications);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-Vue.component('home-message-block', require('./components/UpdateHomeMessage.vue'));
+Vue.component('chat-room', require('./components/ChatRoomComponent.vue'));
 
 const app = new Vue({
-    el: '#app'
+  el: '#app'
 });
