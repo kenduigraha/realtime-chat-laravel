@@ -13,7 +13,7 @@ class AddFKFilesIdToMessagesTable extends Migration
      */
     public function up()
     {
-        Schema::table('messages', function (Blueprint $table) {
+        Schema::table('home_messages', function (Blueprint $table) {
             $table->unsignedInteger('file_id')->nullable();
             $table->foreign('file_id')
                 ->references('id')->on('files')
@@ -29,7 +29,7 @@ class AddFKFilesIdToMessagesTable extends Migration
      */
     public function down()
     {
-        Schema::table('messages', function (Blueprint $table) {
+        Schema::table('home_messages', function (Blueprint $table) {
             $table->dropForeign(['file_id']);
         });
     }

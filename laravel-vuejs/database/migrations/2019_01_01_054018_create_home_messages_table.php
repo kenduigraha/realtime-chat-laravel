@@ -34,8 +34,7 @@ class CreateHomeMessagesTable extends Migration
         Schema::create(
             'home_messages', function (Blueprint $table) {
                 $table->increments('id');
-                $table->unsignedInteger('user_id');
-                $table->text('message');
+                $table->text('text');
                 $table->timestamps();
             }
         );

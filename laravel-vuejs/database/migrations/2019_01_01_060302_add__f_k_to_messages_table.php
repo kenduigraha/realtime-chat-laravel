@@ -13,7 +13,7 @@ class AddFKToMessagesTable extends Migration
      */
     public function up()
     {
-        Schema::table('messages', function (Blueprint $table) {
+        Schema::table('home_messages', function (Blueprint $table) {
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')
                 ->references('id')->on('users')
@@ -28,7 +28,7 @@ class AddFKToMessagesTable extends Migration
      */
     public function down()
     {
-        Schema::table('messages', function (Blueprint $table) {
+        Schema::table('home_messages', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
         });
     }
