@@ -1,4 +1,4 @@
-const mix = require('laravel-mix');
+let mix = require('laravel-mix');
 
 /*
  |--------------------------------------------------------------------------
@@ -11,5 +11,24 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
+//mix.js('resources/js/app.js', 'public/js')
+mix.react('resources/js/front/app.js', 'public/js/front/')
+    .react('resources/js/dashboard/app.js', 'public/js/dashboard/')
+    .sass('resources/sass/front/app.scss', 'public/css/front/')
+    .sass('resources/sass/dashboard/app.scss', 'public/css/dashboard/')
+    .mix.version() // enabling verion for dev and prod
+    .mix.webpackConfig({ // enabling js and scss files mapping 
+        devtool: 'source-map'
+    }).sourceMaps();
+
+//if (mix.inProduction()) {
+//    mix.version();
+//}
+//
+//if (!mix.inProduction()) {
+//    mix.webpackConfig({
+//        devtool: 'source-map'
+//    })
+//    .sourceMaps()
+//}
+
