@@ -1,19 +1,5 @@
 <?php
-/**
- * PHP Version 7.2
- *
- * @category Auth
- * @package  App\Http\Controllers\Auth
- * @author   James Mallon <jamesmallondev@gmail.com>
- * @license  MIT https://opensource.org/licenses/MIT
- * @link     https://www.linkedin.com/in/thiago-mallon/
- */
 
-/**
- * File namespace
- *
- * @subpackage Http\Controllers\Auth
- */
 namespace App\Http\Controllers\Auth;
 
 use App\User;
@@ -21,24 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Auth\Events\Registered;
 
-/**
- * Class customizations
- *
- * @see added-later by Thiago Mallon <thiagomallon@gmail.com> 
- */
-use App\Http\Requests\RegistrationRequest;
-
-/**
- * Class RegisterController
- *
- * @category Controller
- * @package  App\Http\Controllers\Auth
- * @author   James Mallon <jamesmallondev@gmail.com>
- * @license  MIT https://opensource.org/licenses/MIT
- * @link     https://www.linkedin.com/in/thiago-mallon/
- */
 class RegisterController extends Controller
 {
     /*
@@ -72,39 +41,32 @@ class RegisterController extends Controller
     }
 
     /**
-     * Handle a registration request for the application.
+     * Get a validator for an incoming registration request.
      *
-     * @param \App\Http\Requests\RegistrationRequest $request The request data
-     *
-     * @return \Illuminate\Http\Response
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function register(RegistrationRequest $request)
+    protected function validator(array $data)
     {
-        event(new Registered($user = $this->create($request->all())));
-
-        $this->guard()->login($user);
-
-        return $this->registered($request, $user)
-                        ?: redirect($this->redirectPath());
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+        ]);
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param array $data The request data
-     *
+     * @param  array  $data
      * @return \App\User
      */
     protected function create(array $data)
     {
-        session()->flash('message', 'thanks for registering with us!');
-
-        return User::create(
-            [
-            'username' => $data['username'],
+        return User::create([
+            'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            ]
-        );
+        ]);
     }
 }
