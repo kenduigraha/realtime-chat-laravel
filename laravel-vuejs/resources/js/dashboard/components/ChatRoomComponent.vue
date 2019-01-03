@@ -204,7 +204,7 @@
                                         this.messageList.push({ 
                                             type: 'text', // TODO
                                             author: msg.user_id === this.currentUser.id ? "me" : this.currentUser.name, // TODO
-                                            data: { text: msg.message }
+                                            data: { text: msg.text }
                                         });
                                     });
                                 }
