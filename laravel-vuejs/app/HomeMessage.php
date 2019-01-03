@@ -4,9 +4,9 @@
  *
  * @category Model
  * @package  App
- * @author   Thiago Mallon <thiagomallon@gmail.com>
+ * @author   Ken Duigraha Putra <kenduigraha@gmail.com>
  * @license  MIT https://opensource.org/licenses/MIT
- * @link     https://www.linkedin.com/in/thiago-mallon/
+ * @link     https://www.linkedin.com/in/kenduigraha/
  */
 
 /**
@@ -21,9 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @category Model
  * @package  App
- * @author   Thiago Mallon <thiagomallon@gmail.com>
+ * @author   Ken Duigraha Putra <kenduigraha@gmail.com>
  * @license  MIT https://opensource.org/licenses/MIT
- * @link     https://www.linkedin.com/in/thiago-mallon/
+ * @link     https://www.linkedin.com/in/kenduigraha/
  */
 class HomeMessage extends Model
 {

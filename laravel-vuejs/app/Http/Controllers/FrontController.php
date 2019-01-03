@@ -4,9 +4,9 @@
  *
  * @category Controllers
  * @package  App\Http\Controllers
- * @author   Thiago Mallon <thiagomallon@gmail.com>
+ * @author   Ken Duigraha Putra <kenduigraha@gmail.com>
  * @license  MIT https://opensource.org/licenses/MIT
- * @link     https://www.linkedin.com/in/thiago-mallon/
+ * @link     https://www.linkedin.com/in/kenduigraha/
  */
 
 /**
@@ -27,9 +27,9 @@ use App\Events\NewUserLeaveChat;
  *
  * @category Controllers
  * @package  App\Http\Controllers
- * @author   Thiago Mallon <thiagomallon@gmail.com>
+ * @author   Ken Duigraha Putra <kenduigraha@gmail.com>
  * @license  MIT https://opensource.org/licenses/MIT
- * @link     https://www.linkedin.com/in/thiago-mallon/
+ * @link     https://www.linkedin.com/in/kenduigraha/
  */ 
 class FrontController extends Controller
 {

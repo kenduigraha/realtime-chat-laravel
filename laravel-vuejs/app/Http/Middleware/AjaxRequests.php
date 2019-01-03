@@ -4,9 +4,9 @@
  *
  * @category Middleware
  * @package  App\Http\Middleware
- * @author   Thiago Mallon <thiagomallon@gmail.com>
+ * @author   Ken Duigraha Putra <kenduigraha@gmail.com>
  * @license  MIT https://opensource.org/licenses/MIT
- * @link     https://www.linkedin.com/in/thiago-mallon/
+ * @link     https://www.linkedin.com/in/kenduigraha/
  */
 
 /**
@@ -23,9 +23,9 @@ use Closure;
  *
  * @category Middlewares
  * @package  App\Http\Middleware
- * @author   Thiago Mallon <thiagomallon@gmail.com>
+ * @author   Ken Duigraha Putra <kenduigraha@gmail.com>
  * @license  MIT https://opensource.org/licenses/MIT
- * @link     https://www.linkedin.com/in/thiago-mallon/
+ * @link     https://www.linkedin.com/in/kenduigraha/
  */
 class AjaxRequests
 {

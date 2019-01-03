@@ -4,9 +4,9 @@
  *
  * @category Requests
  * @package App\Http\Requests
- * @author  Thiago Mallon <thiagomallon@gmail.com>
+ * @author  Ken Duigraha Putra <kenduigraha@gmail.com>
  * @license MIT https://opensource.org/licenses/MIT
- * @link    https://www.linkedin.com/in/thiago-mallon/
+ * @link    https://www.linkedin.com/in/kenduigraha/
  */
 
 /**
@@ -23,9 +23,9 @@ use Illuminate\Foundation\Http\FormRequest;
  *
  * @category Requests
  * @package App\Http\Requests
- * @author  Thiago Mallon <thiagomallon@gmail.com>
+ * @author  Ken Duigraha Putra <kenduigraha@gmail.com>
  * @license MIT https://opensource.org/licenses/MIT
- * @link    https://www.linkedin.com/in/thiago-mallon/
+ * @link    https://www.linkedin.com/in/kenduigraha/
  */
 class HomeMessageRequest extends FormRequest
 {
