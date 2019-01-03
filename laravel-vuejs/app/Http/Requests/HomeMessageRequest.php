@@ -47,7 +47,7 @@ class HomeMessageRequest extends FormRequest
     public function rules()
     {
         return [
-            'message' => 'required|string|min:5|max:200',
+            'message' => 'required|string|min:1|max:200',
         ];
     }
 }

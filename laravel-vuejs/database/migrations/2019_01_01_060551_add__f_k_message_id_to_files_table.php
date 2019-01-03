@@ -16,7 +16,7 @@ class AddFKMessageIdToFilesTable extends Migration
         Schema::table('files', function (Blueprint $table) {
             $table->unsignedInteger('message_id')->nullable();
             $table->foreign('message_id')
-                ->references('id')->on('messages')
+                ->references('id')->on('home_messages')
                 ->onDelete('cascade')
                 ->nullable();
         });
