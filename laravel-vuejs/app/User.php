@@ -30,6 +30,7 @@ class User extends Authenticatable
 
     public function getMessages()
     {
-        return $this->hasMany('App\Messages', 'user_id');
+        return $this->hasMany('App\HomeMessage', 'user_id');
     }
+    
 }

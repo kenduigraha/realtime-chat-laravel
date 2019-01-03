@@ -16,6 +16,7 @@
  */
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\HomeMessageRequest; 
 use App\Events\PublicMessageSent;   
@@ -62,11 +63,11 @@ class DashboardController extends Controller
      */
     public function sendPublicMessage(HomeMessageRequest $request): object
     {
-        auth()->user()->homeMessages()
-            ->create(['message' => $request->message]); // save the message
-            $currentUser = auth()->user();
-            // dispatch the event 
-            PublicMessageSent::dispatch($request->message, $currentUser);
-            return response(request('message'), 200); // return in json format
+        auth()->user()->getMessages()
+            ->create(['text' => $request->message]); // save the message
+        $currentUser = auth()->user();
+        // dispatch the event 
+        PublicMessageSent::dispatch($request->message, $currentUser);
+        return response(request('message'), 200); // return in json format
     }
 }
