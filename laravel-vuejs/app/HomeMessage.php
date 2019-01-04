@@ -47,6 +47,6 @@ class HomeMessage extends Model
 
     public function files()
     {
-        return $this->hasOne('App\Files', 'file_id');
+        return $this->hasOne('App\Files', 'message_id');
     }
 }
