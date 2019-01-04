@@ -13,7 +13,7 @@
             :isOpen="isChatOpen"
             :close="closeChat"
             :open="openChat"
-            :showEmoji="true"
+            :showEmoji="false"
             :showFile="true"
             :showTypingIndicator="showTypingIndicator"
             :colors="colors"
@@ -78,31 +78,14 @@
                 search: ''
             }
         },
-        mounted() {
-            // axios.get(`/ajax/get-message`)
-            //          .catch(function (error) {
-            //                 return error.response;
-            //           }).then((response) => {
-            //                 console.log('response :')
-            //                 console.log(response)
-            //                 if (response.status == 200) {        
-            //                     this.messageFront = response.data;
-            //                 }
-            //             });
-                        
-        },
         created() { // called after the component is created
             window.Echo.channel('public-message')
                 .listen('PublicMessageSent', payload => {
-                    // console.log(payload)
                     this.placeMessage(payload) 
                 });
             window.Echo.channel('public-new-user-join')
                 .listen('NewUserJoinChat', payload => {
-                    console.log(payload)
                     let { user } = payload;
-                    // user = JSON.parse(user);
-                    console.log(user)
                     this.participants.push({
                         id: String(user.id),
                         name: user.name,
@@ -119,15 +102,13 @@
                 });
             window.Echo.channel('public-new-user-leave')
                 .listen('NewUserLeaveChat', payload => {
-                    console.log(payload)
                     let { user } = payload;
-                    // user = JSON.parse(user);
-                    console.log(user)
 
+                    this.participants = this.participants.filter(usr => String(usr.id) != String(user.id));
                     this.$notify({
                             group: 'foo',
-                            title: `${user} is exiting chatroom`,
-                            text: `Hello! ${user} is exitng chatroom`,
+                            title: `${user.name} is exiting chatroom`,
+                            text: `Hello! ${user.name} is exitng chatroom`,
                             type: 'info',
                             duration: 6000
                         });
@@ -136,45 +117,39 @@
         methods: {
             placeMessage(payload) {
                 const { message, user } = payload;
-                console.log(user)
-                console.log(message)
-                // this.messageFront = message;
-                // this.messageFront.push(payload)
                 this.messageList.push({ 
-                    type: 'text', // TODO
+                    type: !message.files ? 'text' : 'file', 
                     author: user.id === this.currentUser.id ? "me" : this.currentUser.name, // TODO
-                    data: { text: message }
+                    data: {
+                        text: message.text,
+                        file: {
+                            name: !message.files ? '' : message.files.title,
+                            url: !message.files ? '' : message.files.file
+                        }
+                    }
                 });
             },
-            sendMessage (text) {
-                if (text.length > 0) {
-                    console.log('send message')
-                    // TODO : refactor
-                    this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
-                    axios.post(`/ajax//send-message/`, { message: text })
-                        .catch(function (error) {
-                                return error.response;
-                        }).then((response) => {
-                                console.log('response :')
-                                console.log(response)
-                                if (response.status == 200) {
-                                    // todo type text or files
-                                    this.onMessageWasSent({ author: this.currentUser.name, type: 'text', data: { text } })
-                                }
-                        });
-
-                }
-            },
             onMessageWasSent (message) {
-                console.log('senttt')
-                // called when the user sends a message
-                // TODO : if files
-                axios.post(`/ajax/send-message/`, { message: message.data.text })
+                let formData = new FormData();
+                if (message.type === 'file') {
+                    formData.append('file', message.data.file);
+                }
+                if (message.data.text) {
+                    formData.append('text', message.data.text);
+                }
+
+                axios.post(`/ajax/send-message/`,
+                    formData,
+                    {
+                        headers: {
+                            'content-type': 'multipart/form-data'
+                        }
+                    }
+                )
                         .catch(function (error) {
+                            console.error(error)
                                 return error.response;
                         }).then((response) => {
-                                console.log('response :')
-                                console.log(response)
                                 if (response.status == 200) {
                                     // this.messageList = [ ...this.messageList, message ]
                                 }
@@ -185,8 +160,6 @@
                      .catch(function (error) {
                             return error.response;
                       }).then((response) => {
-                            console.log('response :')
-                            console.log(response)
                             if (response.status == 200) {
                                 const user = response.data;
                                 this.currentUser = user;
@@ -196,15 +169,19 @@
                         .catch(function (error) {
                                 return error.response;
                         }).then((response) => {
-                                console.log('response :')
-                                console.log(response)
                                 if (response.status == 200) {
                                     const messages = response.data;
                                     messages.map(msg => {
-                                        this.messageList.push({ 
-                                            type: 'text', // TODO
+                                        this.messageList.push({
+                                            type: !msg.files ? 'text' : 'file', 
                                             author: msg.user_id === this.currentUser.id ? "me" : this.currentUser.name, // TODO
-                                            data: { text: msg.text }
+                                            data: {
+                                                text: msg.text,
+                                                file: {
+                                                    name: !msg.files ? '' : msg.files.title,
+                                                    url: !msg.files ? '' : msg.files.file,
+                                                }
+                                            }
                                         });
                                     });
                                 }
@@ -214,18 +191,14 @@
                 this.newMessagesCount = 0
             },
             closeChat () {
-                // TODO, variable participant handling when close chatbox
                 // called when the user clicks on the botton to close the chat
                 this.isChatOpen = false;
                 axios.get(`/ajax/new-user-leave-chat`)
                      .catch(function (error) {
                             return error.response;
                       }).then((response) => {
-                            console.log('response :')
-                            console.log(response)
                             if (response.status == 200) {
                                 const user = response.data;
-                                // this.currentUser = user;
                             }
                     });
             }
