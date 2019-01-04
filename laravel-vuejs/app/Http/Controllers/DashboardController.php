@@ -72,7 +72,7 @@ class DashboardController extends Controller
         if (!empty($payload['file'])) {
             $data = $request->files->get('file');
             $fileName = auth()->user()->email . '-' . microtime() . '.' . $data->guessExtension();
-            // dd($fileName);
+            
             Storage::disk('local')->putFileAs('public/images', new File($data), $fileName);
             
             $urlImage = asset(Storage::url('images/' . $fileName));
@@ -83,12 +83,6 @@ class DashboardController extends Controller
                 ->files()->create(['title' => $fileName, 'file' => $urlImage]);
             
             $data = $message = \App\HomeMessage::with('files')->where('id', $created->message_id)->first();
-        //     $data->files->file = Storage::download('public/images/' . $fileName, 'test', array(
-        //         'Content-Type'=>'application/pdf',
-        //         'Content-disposition'=>'attachment'
-        //   ));
-            // dd($data);
-
         } else {
             $created = auth()->user()->getMessages()
             ->create(['text' => $payload['text']]); // save the message
@@ -99,6 +93,6 @@ class DashboardController extends Controller
         // dispatch the event 
         PublicMessageSent::dispatch(json_decode($data), $currentUser);
 
-        return response(request('message'), 200)->header('Content-disposition', 'attachment; filename=' . $fileName)->header('Content-Type', 'application/octet-stream'); // return in json format
+        return response(request('message'), 200); // return in json format
     }
 }

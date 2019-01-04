@@ -78,31 +78,14 @@
                 search: ''
             }
         },
-        mounted() {
-            // axios.get(`/ajax/get-message`)
-            //          .catch(function (error) {
-            //                 return error.response;
-            //           }).then((response) => {
-            //                 console.log('response :')
-            //                 console.log(response)
-            //                 if (response.status == 200) {        
-            //                     this.messageFront = response.data;
-            //                 }
-            //             });
-                        
-        },
         created() { // called after the component is created
             window.Echo.channel('public-message')
                 .listen('PublicMessageSent', payload => {
-                    // console.log(payload)
                     this.placeMessage(payload) 
                 });
             window.Echo.channel('public-new-user-join')
                 .listen('NewUserJoinChat', payload => {
-                    console.log(payload)
                     let { user } = payload;
-                    // user = JSON.parse(user);
-                    console.log(user)
                     this.participants.push({
                         id: String(user.id),
                         name: user.name,
@@ -119,16 +102,9 @@
                 });
             window.Echo.channel('public-new-user-leave')
                 .listen('NewUserLeaveChat', payload => {
-                    console.log(payload)
                     let { user } = payload;
-                    // user = JSON.parse(user);
-                    console.log(user)
-
 
                     this.participants = this.participants.filter(usr => String(usr.id) != String(user.id));
-                    console.log(this.participants)
-                    console.log(this.currentUser)
-
                     this.$notify({
                             group: 'foo',
                             title: `${user.name} is exiting chatroom`,
@@ -141,10 +117,6 @@
         methods: {
             placeMessage(payload) {
                 const { message, user } = payload;
-                console.log(user)
-                console.log(message)
-                // this.messageFront = message;
-                // this.messageFront.push(payload)
                 this.messageList.push({ 
                     type: !message.files ? 'text' : 'file', 
                     author: user.id === this.currentUser.id ? "me" : this.currentUser.name, // TODO
@@ -157,38 +129,15 @@
                     }
                 });
             },
-            sendMessage (text) {
-                if (text.length > 0) {
-                    console.log('send message')
-                    // TODO : refactor
-                    this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
-                    axios.post(`/ajax//send-message/`, { message: text })
-                        .catch(function (error) {
-                                return error.response;
-                        }).then((response) => {
-                                console.log('response :')
-                                console.log(response)
-                                if (response.status == 200) {
-                                    // todo type text or files
-                                    this.onMessageWasSent({ author: this.currentUser.name, type: 'text', data: { text } })
-                                }
-                        });
-
-                }
-            },
             onMessageWasSent (message) {
-                console.log('senttt')
-
                 let formData = new FormData();
                 if (message.type === 'file') {
-                    console.log(message.data.file)
                     formData.append('file', message.data.file);
                 }
                 if (message.data.text) {
                     formData.append('text', message.data.text);
                 }
 
-                console.log(formData)
                 axios.post(`/ajax/send-message/`,
                     formData,
                     {
@@ -201,8 +150,6 @@
                             console.error(error)
                                 return error.response;
                         }).then((response) => {
-                                console.log('response :')
-                                console.log(response)
                                 if (response.status == 200) {
                                     // this.messageList = [ ...this.messageList, message ]
                                 }
@@ -213,8 +160,6 @@
                      .catch(function (error) {
                             return error.response;
                       }).then((response) => {
-                            console.log('response :')
-                            console.log(response)
                             if (response.status == 200) {
                                 const user = response.data;
                                 this.currentUser = user;
@@ -224,8 +169,6 @@
                         .catch(function (error) {
                                 return error.response;
                         }).then((response) => {
-                                console.log('response :')
-                                console.log(response)
                                 if (response.status == 200) {
                                     const messages = response.data;
                                     messages.map(msg => {
@@ -254,11 +197,8 @@
                      .catch(function (error) {
                             return error.response;
                       }).then((response) => {
-                            console.log('response :')
-                            console.log(response)
                             if (response.status == 200) {
                                 const user = response.data;
-                                // this.currentUser = user;
                             }
                     });
             }

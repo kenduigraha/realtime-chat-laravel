@@ -54,11 +54,10 @@ class FrontController extends Controller
     {
         /* The only way I found to send only the message to vue */
         $homeMessage = \App\HomeMessage::all();
-        // dd($homeMessage);
+
         $message = ($homeMessage)? 
             $homeMessage : Inspiring::quote();
-        // $message = json_encode(['message'=> $message]);
-        // dd($message);
+
         return view('front.home', compact('message'));
     }
 
@@ -67,9 +66,6 @@ class FrontController extends Controller
         $currentUser = auth()->user();
         /* The only way I found to send only the message to vue */
         $message = \App\HomeMessage::with('files')->get();
-        // dd($message);
-        // $message = ($homeMessage)? 
-        //     $homeMessage : Inspiring::quote();
         return response()->json($message);
     }
 
