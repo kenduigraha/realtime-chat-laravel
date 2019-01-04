@@ -19,7 +19,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\HomeMessageRequest; 
-use App\Events\PublicMessageSent;   
+use App\Events\PublicMessageSent;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class DashboardController
@@ -56,18 +58,41 @@ class DashboardController extends Controller
     /**
      * Public method sendPublicMessage - Method dispatch the broadcasting event
      *
-     * @param \App\Http\Requests\HomeMessageRequest $request The request data
+     * @param Illuminate\Http\Request; $request The request data
      *
      * @method string sendPublicMessage Method dispatch the broadcasting event
      * @return string 
      */
-    public function sendPublicMessage(HomeMessageRequest $request): object
+    public function sendPublicMessage(Request $request): object
     {
-        auth()->user()->getMessages()
-            ->create(['text' => $request->message]); // save the message
+        $payload = $request->all();
         $currentUser = auth()->user();
+        
+        // there's file
+        if (!empty($payload['file'])) {
+            $data = $request->files->get('file');
+            $fileName = auth()->user()->email . '-' . microtime() . '.' . $data->guessExtension();
+            
+            Storage::disk('local')->putFileAs('public/images', new File($data), $fileName);
+            
+            $urlImage = asset(Storage::url('images/' . $fileName));
+
+            $text = empty($payload['text']) ? '' : $payload['text'];
+            
+            $created = auth()->user()->getMessages()->create(['text' => $text])
+                ->files()->create(['title' => $fileName, 'file' => $urlImage]);
+            
+            $data = $message = \App\HomeMessage::with('files')->where('id', $created->message_id)->first();
+        } else {
+            $created = auth()->user()->getMessages()
+            ->create(['text' => $payload['text']]); // save the message
+
+            $data = $message = \App\HomeMessage::with('files')->where('id', $created->id)->first();
+        }
+        
         // dispatch the event 
-        PublicMessageSent::dispatch($request->message, $currentUser);
+        PublicMessageSent::dispatch(json_decode($data), $currentUser);
+
         return response(request('message'), 200); // return in json format
     }
 }
