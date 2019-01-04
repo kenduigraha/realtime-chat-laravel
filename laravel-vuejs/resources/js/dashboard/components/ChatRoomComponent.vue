@@ -13,7 +13,7 @@
             :isOpen="isChatOpen"
             :close="closeChat"
             :open="openChat"
-            :showEmoji="true"
+            :showEmoji="false"
             :showFile="true"
             :showTypingIndicator="showTypingIndicator"
             :colors="colors"
@@ -141,9 +141,15 @@
                 // this.messageFront = message;
                 // this.messageFront.push(payload)
                 this.messageList.push({ 
-                    type: 'text', // TODO
+                    type: !message.files ? 'text' : 'file', 
                     author: user.id === this.currentUser.id ? "me" : this.currentUser.name, // TODO
-                    data: { text: message }
+                    data: {
+                        text: message.text,
+                        file: {
+                            name: !message.files ? '' : message.files.title,
+                            url: !message.files ? '' : message.files.file
+                        }
+                    }
                 });
             },
             sendMessage (text) {
@@ -167,10 +173,27 @@
             },
             onMessageWasSent (message) {
                 console.log('senttt')
-                // called when the user sends a message
-                // TODO : if files
-                axios.post(`/ajax/send-message/`, { message: message.data.text })
+
+                let formData = new FormData();
+                if (message.type === 'file') {
+                    console.log(message.data.file)
+                    formData.append('file', message.data.file);
+                }
+                if (message.data.text) {
+                    formData.append('text', message.data.text);
+                }
+
+                console.log(formData)
+                axios.post(`/ajax/send-message/`,
+                    formData,
+                    {
+                        headers: {
+                            'content-type': 'multipart/form-data'
+                        }
+                    }
+                )
                         .catch(function (error) {
+                            console.error(error)
                                 return error.response;
                         }).then((response) => {
                                 console.log('response :')
@@ -201,10 +224,16 @@
                                 if (response.status == 200) {
                                     const messages = response.data;
                                     messages.map(msg => {
-                                        this.messageList.push({ 
-                                            type: 'text', // TODO
+                                        this.messageList.push({
+                                            type: !msg.files ? 'text' : 'file', 
                                             author: msg.user_id === this.currentUser.id ? "me" : this.currentUser.name, // TODO
-                                            data: { text: msg.text }
+                                            data: {
+                                                text: msg.text,
+                                                file: {
+                                                    name: !msg.files ? '' : msg.files.title,
+                                                    url: !msg.files ? '' : msg.files.file,
+                                                }
+                                            }
                                         });
                                     });
                                 }

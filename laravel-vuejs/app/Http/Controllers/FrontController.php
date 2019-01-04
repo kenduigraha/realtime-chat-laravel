@@ -66,7 +66,7 @@ class FrontController extends Controller
     {
         $currentUser = auth()->user();
         /* The only way I found to send only the message to vue */
-        $message = \App\HomeMessage::get();
+        $message = \App\HomeMessage::with('files')->get();
         // dd($message);
         // $message = ($homeMessage)? 
         //     $homeMessage : Inspiring::quote();
