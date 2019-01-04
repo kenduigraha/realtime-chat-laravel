@@ -124,10 +124,15 @@
                     // user = JSON.parse(user);
                     console.log(user)
 
+
+                    this.participants = this.participants.filter(usr => String(usr.id) != String(user.id));
+                    console.log(this.participants)
+                    console.log(this.currentUser)
+
                     this.$notify({
                             group: 'foo',
-                            title: `${user} is exiting chatroom`,
-                            text: `Hello! ${user} is exitng chatroom`,
+                            title: `${user.name} is exiting chatroom`,
+                            text: `Hello! ${user.name} is exitng chatroom`,
                             type: 'info',
                             duration: 6000
                         });
@@ -243,7 +248,6 @@
                 this.newMessagesCount = 0
             },
             closeChat () {
-                // TODO, variable participant handling when close chatbox
                 // called when the user clicks on the botton to close the chat
                 this.isChatOpen = false;
                 axios.get(`/ajax/new-user-leave-chat`)

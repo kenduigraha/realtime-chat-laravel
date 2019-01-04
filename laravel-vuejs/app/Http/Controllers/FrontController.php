@@ -85,7 +85,7 @@ class FrontController extends Controller
     {
         $currentUser = auth()->user();
 
-        NewUserLeaveChat::dispatch($currentUser->name);
+        NewUserLeaveChat::dispatch($currentUser);
         return response()->json($currentUser); // return in json format
     }
 }
